@@ -10,18 +10,29 @@ class setType(DjangoObjectType):
         model = Profile
 
 class setProfile(graphene.Mutation):
-    token = graphene.Field(setType)
-
+    profile = graphene.Field(setType)
+    
+    
     class Arguments:
         token = graphene.String()
+        email = graphene.String()
+        fullname = graphene.String()
+        birthdate = graphene.String()
+        phones = graphene.List(graphene.String)
+        preferred_contact = graphene.String()
 
-    def mutate(self,info,token,):
-        token = Profile(token = token)
-        token.save()
+    def mutate(self,info,token, email, fullname, birthdate, phones, preferred_contact, *profile):
+        profile = Profile(token=token, 
+        email=email, 
+        fullname=fullname,
+        birthdate=birthdate,
+        phones=phones,
+        preferred_contact=preferred_contact)
+        profile.save()
         
         
         return setProfile(
-            token=token)
+            profile=profile)
            
 
 
@@ -29,14 +40,14 @@ class Mutation(graphene.ObjectType):
     set_profile = setProfile.Field()
 
 class Query(graphene.ObjectType):
-    getProfile = graphene.List(setType, 
+    get_profile = graphene.List(setType, 
     token=graphene.String(),
     )
     
-    def resolve_getProfile(self, info, token=None, **kwargs,):
+    def resolve_getprofile(self, info, profile,token=None,**kwargs):
         if token:
             filter = (
-                Q(token__icontains=token)
+                Q(profile__icontains=token)
             )
             return Profile.objects.filter(filter)
         
