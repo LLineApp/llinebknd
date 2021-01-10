@@ -2,11 +2,12 @@ import graphene
 
 from graphene_django import DjangoObjectType
 
-from .models import Modelo
+from .models import Profile
+from django.db.models import Q
 
 class setType(DjangoObjectType):
     class Meta:
-        model = Modelo
+        model = Profile
 
 class setProfile(graphene.Mutation):
     token = graphene.Field(setType)
@@ -15,7 +16,7 @@ class setProfile(graphene.Mutation):
         token = graphene.String()
 
     def mutate(self,info,token,):
-        token = Modelo(token = token)
+        token = Profile(token = token)
         token.save()
         
         
@@ -28,7 +29,15 @@ class Mutation(graphene.ObjectType):
     set_profile = setProfile.Field()
 
 class Query(graphene.ObjectType):
-    dados = graphene.List(setType)
+    getProfile = graphene.List(setType, 
+    token=graphene.String(),
+    )
     
-    def resolve_dados(self, info,):
-        return Modelo.objects.all()
+    def resolve_getProfile(self, info, token=None, **kwargs,):
+        if token:
+            filter = (
+                Q(token__icontains=token)
+            )
+            return Profile.objects.filter(filter)
+        
+        return Profile.objects.all()
