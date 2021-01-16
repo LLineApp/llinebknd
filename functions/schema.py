@@ -49,11 +49,11 @@ class Query(graphene.ObjectType):
                                 token=graphene.String(),
                                 )
 
-    def resolve_getprofile(self, info, profile, token=None, profile_data=None, **kwargs):
+    def resolve_get_profile(self, info, token=None, **kwargs):
         if token:
             filter = (
-                Q(profile__icontains=token)
+                Q(token__exact=token)
             )
-            return Profile.objects.filter(filter)
+            return Profile.objects.all().filter(filter)
 
-        return Profile.objects.all()
+        pass
