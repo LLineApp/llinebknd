@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
             name='Profile',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('token', models.TextField(blank=True)),
+                ('token', models.TextField(blank=False)),
             ],
         ),
     ]
