@@ -5,6 +5,8 @@ from graphene_django import DjangoObjectType
 from .models import Profile
 from django.db.models import Q
 
+from .auth import getCPFFromAuth
+
 
 class ProfileInput(graphene.InputObjectType):
     email = graphene.String(required=False)
@@ -27,7 +29,9 @@ class setProfile(graphene.Mutation):
         profile_data = ProfileInput(required=True)
 
     def mutate(self, info, token, profile_data=None, *profile):
-        profile = Profile(token=token,
+        cpf = getCPFFromAuth(token)
+
+        profile = Profile(token=cpf, #Aqui eu não estou conseguindo passar o CPF no lugar do token
                           email=profile_data.email,
                           fullname=profile_data.fullname,
                           birthdate=profile_data.birthdate,
