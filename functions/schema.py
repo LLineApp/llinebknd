@@ -29,9 +29,8 @@ class setProfile(graphene.Mutation):
         profile_data = ProfileInput(required=True)
 
     def mutate(self, info, token, profile_data=None, *profile):
-        cpf = getCPFFromAuth(token)
-
-        profile = Profile(token=cpf, #Aqui eu não estou conseguindo passar o CPF no lugar do token
+        cpf = str(getCPFFromAuth(token))
+        profile = Profile(cpf=cpf,
                           email=profile_data.email,
                           fullname=profile_data.fullname,
                           birthdate=profile_data.birthdate,
@@ -55,8 +54,9 @@ class Query(graphene.ObjectType):
 
     def resolve_get_profile(self, info, token=None, **kwargs):
         if token:
+            cpf = str(getCPFFromAuth(token))
             filter = (
-                Q(token__exact=token)
+                Q(cpf__exact=cpf)
             )
             return Profile.objects.all().filter(filter)
 
