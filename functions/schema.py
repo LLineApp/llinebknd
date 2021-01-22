@@ -5,6 +5,8 @@ from graphene_django import DjangoObjectType
 from .models import Profile
 from django.db.models import Q
 
+from .auth import getCPFFromAuth
+
 
 class ProfileInput(graphene.InputObjectType):
     email = graphene.String(required=False)
@@ -26,15 +28,14 @@ class setProfile(graphene.Mutation):
         token = graphene.String()
         profile_data = ProfileInput(required=True)
 
-    def mutate(self, info, token, profile_data=None, *profile):
-        profile = Profile(token=token,
-                          email=profile_data.email,
-                          fullname=profile_data.fullname,
-                          birthdate=profile_data.birthdate,
-                          phones=profile_data.phones,
-                          preferred_contact=profile_data.preferred_contact
-                          )
-        profile.save()
+    def mutate(self, info, token, profile_data=None):
+        cpfFromAuth = str(getCPFFromAuth(token))
+        profile, created = Profile.objects.update_or_create(cpf=cpfFromAuth,
+                                                            defaults={
+                                                                **profile_data}
+                                                            )
+        if created:
+            profile.save()
 
         return setProfile(
             profile=profile)
@@ -51,8 +52,9 @@ class Query(graphene.ObjectType):
 
     def resolve_get_profile(self, info, token=None, **kwargs):
         if token:
+            cpf = str(getCPFFromAuth(token))
             filter = (
-                Q(token__exact=token)
+                Q(cpf__exact=cpf)
             )
             return Profile.objects.all().filter(filter)
 

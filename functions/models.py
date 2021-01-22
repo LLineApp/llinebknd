@@ -6,11 +6,10 @@ class Phone(models.Model):
 
 
 class Profile(models.Model):
-   token = models.TextField(blank=False)
+   cpf = models.TextField(blank=False)
    email = models.TextField(blank=True, null=True)
    fullname = models.TextField(blank=True, null=True)
    birthdate = models.TextField(blank=True, null=True)
    phones = models.ForeignKey(Phone, on_delete=models.CASCADE, null=True)
    preferred_contact = models.TextField(blank=True, null=True)
-
 
