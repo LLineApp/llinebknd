@@ -10,7 +10,7 @@ class ProfileInput(graphene.InputObjectType):
     email = graphene.String(required=False)
     fullname = graphene.String(required=False)
     birthdate = graphene.String(required=False)
-    phones = graphene.List(graphene.String, required=False)
+    phones = graphene.List( graphene.String,required=False)
     preferred_contact = graphene.String(required=False)
 
 
