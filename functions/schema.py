@@ -22,10 +22,16 @@ class setType(DjangoObjectType):
     class Meta:
         model = Profile
 
+    phones = graphene.List(graphene.String)
+
+    def resolve_phones(self, info):
+        return Phones.objects.filter(
+            profile__in=str(self.id)).values_list('phone', flat=True)
+
+
 
 class setProfile(graphene.Mutation):
     profile = graphene.Field(setType)
-    phones = graphene.String()
 
     class Arguments:
         token = graphene.String()
@@ -69,12 +75,6 @@ class Query(graphene.ObjectType):
             )
 
             profile = Profile.objects.all().filter(filter)
-
-            phones = Phones.objects.filter(
-                profile__in=profile).values_list('phone', flat=True)
-            arrPhone = [phone for phone in phones]
-
-            print(arrPhone)
 
             return profile
 
