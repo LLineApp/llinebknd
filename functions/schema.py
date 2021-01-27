@@ -2,10 +2,12 @@ import graphene
 
 from graphene_django import DjangoObjectType
 
-from .models import Profile
+from .models import Profile, Phones
 from django.db.models import Q
 
 from .auth import getCPFFromAuth
+
+import json
 
 
 class ProfileInput(graphene.InputObjectType):
@@ -19,6 +21,13 @@ class ProfileInput(graphene.InputObjectType):
 class setType(DjangoObjectType):
     class Meta:
         model = Profile
+
+    phones = graphene.List(graphene.String)
+
+    def resolve_phones(self, info):
+        return Phones.objects.filter(
+            profile__in=str(self.id)).values_list('phone', flat=True)
+
 
 
 class setProfile(graphene.Mutation):
@@ -36,6 +45,14 @@ class setProfile(graphene.Mutation):
                                                             )
         if created:
             profile.save()
+
+        if profile_data.phones:
+            Phones.objects.filter(profile=profile).delete()
+            for phone in profile_data.phones:
+                phones = Phones(profile=profile,
+                                phone=phone,
+                                )
+                phones.save()
 
         return setProfile(
             profile=profile)
@@ -56,6 +73,9 @@ class Query(graphene.ObjectType):
             filter = (
                 Q(cpf__exact=cpf)
             )
-            return Profile.objects.all().filter(filter)
+
+            profile = Profile.objects.all().filter(filter)
+
+            return profile
 
         pass
