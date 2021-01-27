@@ -2,7 +2,7 @@ import graphene
 
 from graphene_django import DjangoObjectType
 
-from .models import Profile
+from .models import Profile, Phones
 from django.db.models import Q
 
 from .auth import getCPFFromAuth
@@ -45,6 +45,14 @@ class setProfile(graphene.Mutation):
                                                             )
         if created:
             profile.save()
+
+        if profile_data.phones:
+            Phones.objects.filter(profile=profile).delete()
+            for phone in profile_data.phones:
+                phones = Phones(profile=profile,
+                                phone=phone,
+                                )
+                phones.save()
 
         return setProfile(
             profile=profile)
