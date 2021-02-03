@@ -14,7 +14,7 @@ class Profile(models.Model):
     business_email = models.TextField(blank=True, null=True)
     business_kind = models.TextField(blank=True, null=True)
     business_field = models.TextField(blank=True, null=True)
-    company_has_private_insurance = models.BooleanField(blank=True, null=True)
+    company_has_private_insurance = models.NullBooleanField(blank=True, null=True)
     social_security_value = models.TextField(blank=True, null=True)
     private_security_your_value = models.TextField(blank=True, null=True)
     private_security_company_value = models.TextField(blank=True, null=True)
