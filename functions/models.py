@@ -20,6 +20,22 @@ class Profile(models.Model):
     private_security_company_value = models.TextField(blank=True, null=True)
     private_security_current_balance = models.TextField(blank=True, null=True)
     income_tax_declaration_type = models.TextField(blank=True, null=True)
+    monthly_expenses = models.TextField(blank=True, null=True)
+    costs_with_dependents = models.TextField(blank=True, null=True)
+    how_much_you_save = models.TextField(blank=True, null=True)
+    debt_loans = models.TextField(blank=True, null=True)
+    partner_in_company = models.TextField(blank=True, null=True)
+    health = models.TextField(blank=True, null=True)
+    plans_and_projects = models.TextField(blank=True, null=True)
+    current_investment_process = models.TextField(blank=True, null=True)
+    follow_economic_news = models.NullBooleanField(blank=True, null=True)
+    accepts_info_about_courses = models.NullBooleanField(blank=True, null=True)
+    have_financial_concerns = models.TextField(blank=True, null=True)
+    addicional_info = models.TextField(blank=True, null=True)
+    
+
+
+
 
 
 

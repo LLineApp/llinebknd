@@ -28,6 +28,20 @@ class ProfileInput(graphene.InputObjectType):
     private_security_your_value = graphene.Int(required=False)
     private_security_company_value = graphene.Int(required=False)
     private_security_current_balance = graphene.Int(required=False)
+    monthly_expenses = graphene.Int(required=False)
+    costs_with_dependents = graphene.Int(required=False)
+    how_much_you_save = graphene.Int(required=False)
+    debt_loans = graphene.Int(required=False)
+    partner_in_company = graphene.Int(required=False)
+    health = graphene.String(required=False)
+    plans_and_projects = graphene.String(required=False)
+    current_investment_process = graphene.String(required=False)
+    accepts_info_about_courses = graphene.Boolean(required=False)
+    follow_economic_news = graphene.Boolean(required=False)
+    have_financial_concerns = graphene.String(required=False)
+    addicional_info = graphene.String(required=False)
+
+
 
 
     
