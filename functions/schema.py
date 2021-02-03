@@ -16,11 +16,25 @@ class ProfileInput(graphene.InputObjectType):
     birthdate = graphene.String(required=False)
     phones = graphene.List(graphene.String, required=False)
     preferred_contact = graphene.String(required=False)
+    occupation = graphene.String(required=False)
+    role = graphene.String(required=False)
+    company_name = graphene.String(required=False)
+    business_email = graphene.String(required=False)
+    business_kind = graphene.String(required=False)
+    business_field = graphene.String(required=False)
+    income_tax_declaration_type = graphene.String(required=False)
+    company_has_private_insurance = graphene.Boolean(required=False)
+    social_security_value = graphene.Int(required=False)
+    private_security_your_value = graphene.Int(required=False)
+    private_security_company_value = graphene.Int(required=False)
+    private_security_current_balance = graphene.Int(required=False)
 
 
+    
 class setType(DjangoObjectType):
     class Meta:
         model = Profile
+
 
     phones = graphene.List(graphene.String)
 
