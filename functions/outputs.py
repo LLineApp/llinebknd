@@ -14,3 +14,13 @@ class ImmovablePropertiesOutput(graphene.ObjectType):
     funded = graphene.Boolean(required=False)
     insurance_value = graphene.Float(required=False)
     insurance_company = graphene.String(required=False)
+
+
+
+class InsuranceOutput(graphene.ObjectType):
+    profile = graphene.ID()
+    insurance_type = graphene.String(required=False)
+    value = graphene.Float(required=False)
+    monthly_fee = graphene.Boolean(required=False)
+    coverage = graphene.Float(required=False)
+    company = graphene.String(required=False)

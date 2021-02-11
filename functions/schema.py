@@ -22,6 +22,7 @@ class setType(DjangoObjectType):
             profile__in=str(self.id)).values_list('phone', flat=True)
 
     immovable_properties = graphene.List(ImmovablePropertiesOutput)
+    
 
     def resolve_immovable_properties(self, info):
         return ImmovableProperties.objects.filter(
@@ -32,6 +33,13 @@ class setType(DjangoObjectType):
     def resolve_investor_experience(self, info):
         return InvestorExperience.objects.filter(
             profile__in=str(self.id)).values() 
+
+    insurance = graphene.List(InsuranceOutput)
+
+    def relsove_insurance(self, info):
+        return Insurance.objects.filter(
+            profile__in=str(self.id)).values()
+        
 
 
 class setProfile(graphene.Mutation):
@@ -83,6 +91,21 @@ class setProfile(graphene.Mutation):
                                                          value=investor_experiency['value'],
                                                          )
                 investor_experience.save()
+
+
+        if insurance:
+            Insurance.objects.filter(profile=profile).delete()
+            for insurancy in insurance:
+                insurance = Insurance(profile=profile,
+                                      insurance_type=insurancy['insurance_type'],
+                                      value=insurancy['value'],
+                                      monthly_fee=insurancy['monthly_fee'],
+                                      coverage=insurancy['coverage'],
+                                      company=insuracy['company'],
+                                    
+                                      
+                )
+                insurace.save()
 
 class Mutation(graphene.ObjectType):
     set_profile = setProfile.Field()

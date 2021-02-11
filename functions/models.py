@@ -53,4 +53,13 @@ class InvestorExperience(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
     kind = models.TextField(blank=True, null=True)
     value = models.FloatField(blank=True, null=True)
+
+
+class Insurance(models.Model):
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    insurance_type = models.TextField(blank=True, null=True)
+    value = models.FloatField(blank=True, null=True)
+    monthly_fee = models.NullBooleanField(blank=True, null=True)
+    coverage = models.FloatField(blank=True, null=True)
+    company = models.TextField(blank=True, null=True)
     
