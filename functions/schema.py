@@ -7,7 +7,8 @@ from django.db.models import Q
 
 from .auth import getCPFFromAuth
 
-from .puts import *
+from .inputs import *
+from .outputs import *
 
 
 class setType(DjangoObjectType):
@@ -26,7 +27,7 @@ class setType(DjangoObjectType):
         return ImmovableProperties.objects.filter(
             profile__in=str(self.id)).values()
 
-    investor_experience = graphene.List(InvestorExperienceOutPut)       
+    investor_experience = graphene.List(InvestorExperienceOutput)       
 
     def resolve_investor_experience(self, info):
         return InvestorExperience.objects.filter(

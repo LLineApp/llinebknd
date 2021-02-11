@@ -9,23 +9,8 @@ class InvestorExperienceInput(graphene.InputObjectType):
     value = graphene.Float(required=False)
 
 
-class InvestorExperienceOutPut(graphene.ObjectType):
-    profile = graphene.Id()
-    portfolio_type = graphene.String(required=False)
-    value = graphene.Float(required=False)
-
-
 class ImmovablePropertiesInput(graphene.InputObjectType):
     profile = graphene.ID()
-    description = graphene.String(required=False)
-    value = graphene.Float(required=False)
-    rented = graphene.Boolean(required=False)
-    funded = graphene.Boolean(required=False)
-    insurance_value = graphene.Float(required=False)
-    insurance_company = graphene.String(required=False)
-
-
-class ImmovablePropertiesOutput(graphene.ObjectType):
     description = graphene.String(required=False)
     value = graphene.Float(required=False)
     rented = graphene.Boolean(required=False)
