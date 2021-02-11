@@ -3,8 +3,7 @@ from graphene_django import DjangoObjectType
 
 
 class InvestorExperienceOutput(graphene.ObjectType):
-    profile = graphene.Id()
-    portfolio_type = graphene.String(required=False)
+    kind = graphene.String(required=False)
     value = graphene.Float(required=False)
 
 

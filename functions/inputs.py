@@ -4,13 +4,11 @@ from graphene_django import DjangoObjectType
 
 
 class InvestorExperienceInput(graphene.InputObjectType):
-    profile = graphene.ID()
-    portfolio_type = graphene.String(required=False)
+    kind = graphene.String(required=False)
     value = graphene.Float(required=False)
 
 
 class ImmovablePropertiesInput(graphene.InputObjectType):
-    profile = graphene.ID()
     description = graphene.String(required=False)
     value = graphene.Float(required=False)
     rented = graphene.Boolean(required=False)
@@ -48,6 +46,7 @@ class ProfileInput(graphene.InputObjectType):
     follow_economic_news = graphene.Boolean(required=False)
     have_financial_concerns = graphene.String(required=False)
     additional_info = graphene.String(required=False)
+    portfolio_income = graphene.Float(required=False)
     phones = graphene.List(graphene.String, required=False)
     immovable_properties = graphene.List(ImmovablePropertiesInput, required=False)
-    portfolio_income - graphene.Float(required=False)
+    investor_experience = graphene.List(InvestorExperienceInput, required=False)

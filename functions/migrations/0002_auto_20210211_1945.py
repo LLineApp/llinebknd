@@ -27,7 +27,7 @@ class Migration(migrations.Migration):
             name='InvestorExperience',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('portfolio_type', models.TextField(blank=True, null=True)),
+                ('kind', models.TextField(blank=True, null=True)),
                 ('value', models.FloatField(blank=True, null=True)),
             ],
         ),

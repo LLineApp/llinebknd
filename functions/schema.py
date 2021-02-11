@@ -79,7 +79,7 @@ class setProfile(graphene.Mutation):
             InvestorExperience.objects.filter(profile=profile).delete()
             for investor_experiency in investor_experience:
                 investor_experience = InvestorExperience(profile=profile,
-                                                         portfolio_type=investor_experiency['portfolio_type'],
+                                                         kind=investor_experiency['kind'],
                                                          value=investor_experiency['value'],
                                                          )
                 investor_experience.save()

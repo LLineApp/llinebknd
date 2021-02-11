@@ -51,6 +51,6 @@ class Phones(models.Model):
 
 class InvestorExperience(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
-    portfolio_type = models.TextField(blank=True, null=True)
+    kind = models.TextField(blank=True, null=True)
     value = models.FloatField(blank=True, null=True)
     
