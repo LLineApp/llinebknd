@@ -14,8 +14,7 @@ class Profile(models.Model):
     business_email = models.EmailField(blank=True, null=True)
     business_kind = models.TextField(blank=True, null=True)
     business_field = models.TextField(blank=True, null=True)
-    company_has_private_insurance = models.NullBooleanField(
-        blank=True, null=True)
+    company_has_private_insurance = models.NullBooleanField(blank=True, null=True)
     social_security_value = models.FloatField(blank=True, null=True)
     private_security_your_value = models.FloatField(blank=True, null=True)
     private_security_company_value = models.FloatField(blank=True, null=True)
@@ -33,7 +32,7 @@ class Profile(models.Model):
     accepts_info_about_courses = models.NullBooleanField(blank=True, null=True)
     have_financial_concerns = models.TextField(blank=True, null=True)
     additional_info = models.TextField(blank=True, null=True)
-
+    portfolio_income = models.FloatField(blank=True, null=True)
 
 class ImmovableProperties(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
@@ -48,3 +47,10 @@ class ImmovableProperties(models.Model):
 class Phones(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
     phone = models.TextField(blank=True, null=True)
+
+
+class InvestorExperience(models.Model):
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    kind = models.TextField(blank=True, null=True)
+    value = models.FloatField(blank=True, null=True)
+    
