@@ -50,4 +50,5 @@ class ProfileInput(graphene.InputObjectType):
     additional_info = graphene.String(required=False)
     phones = graphene.List(graphene.String, required=False)
     immovable_properties = graphene.List(ImmovablePropertiesInput, required=False)
-    portfolio_income - graphene.Float(required=False)
+    portfolio_income = graphene.Float(required=False)
+    investor_experience = graphene.List(required=False)
