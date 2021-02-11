@@ -84,6 +84,7 @@ class setProfile(graphene.Mutation):
                                     
                                       
                 )
+                insurace.save()
 
 
 class Mutation(graphene.ObjectType):
