@@ -1,3 +1,8 @@
+import graphene
+from graphene_django import DjangoObjectType
+
+
+
 class InvestorExperienceInput(graphene.InputObjectType):
     profile = graphene.ID()
     portfolio_type = graphene.String(required=False)
