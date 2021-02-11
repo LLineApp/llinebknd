@@ -31,6 +31,12 @@ class setType(DjangoObjectType):
         return Insurance.objects.filter(
             profile__in=str(self.id)).values()
 
+    investment_portfolio = graphene.List(InvestmentPortfolioOutPut)
+
+    def resolve_investment_portfolio(self, info):
+        return InvestmentPortfolio.objects.filter(
+            profile__in=str(self.id)).values()
+
 class setProfile(graphene.Mutation):
     profile = graphene.Field(setType)
 
@@ -43,7 +49,8 @@ class setProfile(graphene.Mutation):
 
         immovable_properties = profile_data.pop("immovable_properties")
         insurance = profile_data.pop("insurance")
-
+        investment_portfolio = profile_data.pop("investment_portfolio")
+        
         profile, created = Profile.objects.update_or_create(cpf=cpfFromAuth,
                                                             defaults={
                                                                 **profile_data}
@@ -86,6 +93,16 @@ class setProfile(graphene.Mutation):
                 )
                 insurace.save()
 
+        if investment_portfolio:
+            InvestmentPortfolio.objects.filter(profile=profile).delete()
+            for investment_portfolity in investment_portfolio:
+                investment_portfolio = InvestmentPortfolio(profile=profile,
+                                                           investment_portfolio_type=investment_portfolity['investment_portfolio_type'],
+                                                           value=investment_portfolity['value'],
+                                                           tx=investment_portfolity['tx'],
+                )
+                investment_portfolio.save()
+
 
 class Mutation(graphene.ObjectType):
     set_profile = setProfile.Field()
@@ -93,7 +110,7 @@ class Mutation(graphene.ObjectType):
 
 class Query(graphene.ObjectType):
     get_profile = graphene.List(setType,
-                                token=graphene.String(),
+                         token=graphene.String(),
                                 )
 
     def resolve_get_profile(self, info, token=None, **kwargs):

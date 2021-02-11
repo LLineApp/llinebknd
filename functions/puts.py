@@ -3,6 +3,20 @@ from graphene_django import DjangoObjectType
 from .models import *
 
 
+class InvestmentPortfolioInput(graphene.InputObjectType):
+    profile = graphene.ID()
+    investment_portfolio_type = graphene.String(required=False)
+    value = graphene.Float(required=False)
+    tx = graphene.Float(required=False)
+
+
+class InvestmentPortfolioOutPut(graphene.ObjectType):
+    profile = graphene.ID()
+    investment_portfolio_type = graphene.String(required=False)
+    value = graphene.Float(required=False)
+    tx = graphene.Float(required=False)
+
+
 class InsuranceInput(graphene.InputObjectType):
     profile = graphene.ID()
     insurance_type = graphene.String(required=False)
@@ -85,3 +99,4 @@ class ProfileInput(graphene.InputObjectType):
     immovable_properties = graphene.List(ImmovablePropertiesInput, required=False)
     portfolio_income = graphene.Float(required=False)
     insurace = graphene.List(required=False)
+    investment_portfolio = graphene.List(required=False)
