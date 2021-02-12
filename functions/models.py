@@ -2,6 +2,11 @@ from django.conf import settings
 from django.db import models
 
 
+class FinancialAdvisors(models.Model):
+    fullname = models.TextField(blank=False, null=True)
+    register = models.TextField(blank=False, null=True)
+    company = models.TextField(blank=False, null=True)
+
 class Profile(models.Model):
     cpf = models.TextField(blank=False)
     email = models.EmailField(blank=True, null=True)
@@ -33,6 +38,8 @@ class Profile(models.Model):
     have_financial_concerns = models.TextField(blank=True, null=True)
     additional_info = models.TextField(blank=True, null=True)
     portfolio_income = models.FloatField(blank=True, null=True)
+    financial_advisor = models.ForeignKey(FinancialAdvisors, null=True ,on_delete=models.CASCADE)
+    accept_financial_advisor_contact = models.NullBooleanField(blank=True, null=True)
 
 class ImmovableProperties(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
@@ -86,3 +93,4 @@ class FixedIncomeSecurities(models.Model):
     kind  = models.TextField(blank=True, null=True)
     value = models.FloatField(blank=True, null=True)
     tx = models.FloatField(blank=True, null=True)
+

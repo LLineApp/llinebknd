@@ -2,6 +2,12 @@ import graphene
 from graphene_django import DjangoObjectType
 
 
+class FinancialAdvisorInput(graphene.InputObjectType):
+    fullname = graphene.String(required=True)
+    register = graphene.String(required=True)
+    company = graphene.String(required=True)
+
+
 class FixedIncomeSecuritiesInput(graphene.InputObjectType):
     kind = graphene.String(required=False)
     value = graphene.Float(required=False)
@@ -82,3 +88,5 @@ class ProfileInput(graphene.InputObjectType):
     investment_portfolios = graphene.List(InvestmentPortfoliosInput, required=False)
     personal_private_securities = graphene.List(PersonalPrivateSecuritiesInput, required=False)
     fixed_income_securities = graphene.List(FixedIncomeSecuritiesInput, required=False)
+    financial_advisor = graphene.Field(FinancialAdvisorInput, required=False)
+    accept_financial_advisor_contact = graphene.Boolean(required=False)
