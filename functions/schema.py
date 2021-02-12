@@ -133,12 +133,12 @@ class setProfile(graphene.Mutation):
             PersonalPrivateSecurities.objects.filter(profile=profile).delete()
             for personal_private_security in personal_private_securities:
                 personal_private_securities = PersonalPrivateSecurities(profile=profile,
-                                                                        bank=personal_private_securitiy['bank'],
-                                                                        enterprise=personal_private_securitiy['enterprise'],
-                                                                        cooperative=personal_private_securitiy['cooperative'],
-                                                                        survival=personal_private_securitiy['survival'],
-                                                                        table=personal_private_securitiy['table'],
-                                                                        balance=personal_private_securitiy['balance'],            
+                                                                        bank=personal_private_security['bank'],
+                                                                        enterprise=personal_private_security['enterprise'],
+                                                                        cooperative=personal_private_security['cooperative'],
+                                                                        survival=personal_private_security['survival'],
+                                                                        table=personal_private_security['table'],
+                                                                        balance=personal_private_security['balance'],            
                 )
                 personal_private_securities.save()
 
