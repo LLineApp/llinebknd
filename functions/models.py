@@ -49,8 +49,17 @@ class Phones(models.Model):
     phone = models.TextField(blank=True, null=True)
 
 
-class InvestorExperience(models.Model):
+class InvestorExperiences(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
     kind = models.TextField(blank=True, null=True)
     value = models.FloatField(blank=True, null=True)
+
+
+class Insurances(models.Model):
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    kind = models.TextField(blank=True, null=True)
+    value = models.FloatField(blank=True, null=True)
+    monthly_fee = models.NullBooleanField(blank=True, null=True)
+    coverage = models.FloatField(blank=True, null=True)
+    company = models.TextField(blank=True, null=True)
     
