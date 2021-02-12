@@ -2,7 +2,7 @@ import graphene
 from graphene_django import DjangoObjectType
 
 
-class InvestorExperienceOutput(graphene.ObjectType):
+class InvestorExperiencesOutput(graphene.ObjectType):
     kind = graphene.String(required=False)
     value = graphene.Float(required=False)
 
