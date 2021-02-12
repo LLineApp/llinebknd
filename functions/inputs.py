@@ -1,17 +1,15 @@
 import graphene
 from graphene_django import DjangoObjectType
 
-
-class InsuranceInput(graphene.InputObjectType):
-    profile = graphene.ID()
-    insurance_type = graphene.String(required=False)
+class InsurancesInput(graphene.InputObjectType):
+    kind = graphene.String(required=False)
     value = graphene.Float(required=False)
     monthly_fee = graphene.Boolean(required=False)
     coverage = graphene.Float(required=False)
     company = graphene.String(required=False)
 
 
-class InvestorExperienceInput(graphene.InputObjectType):
+class InvestorExperiencesInput(graphene.InputObjectType):
     kind = graphene.String(required=False)
     value = graphene.Float(required=False)
 
@@ -57,9 +55,5 @@ class ProfileInput(graphene.InputObjectType):
     portfolio_income = graphene.Float(required=False)
     phones = graphene.List(graphene.String, required=False)
     immovable_properties = graphene.List(ImmovablePropertiesInput, required=False)
-    investor_experience = graphene.List(InvestorExperienceInput, required=False)
-    insurance = graphene.List(InsuranceInput, required=False)
-
-
-
+    investor_experiences = graphene.List(InvestorExperienceInput, required=False)
 

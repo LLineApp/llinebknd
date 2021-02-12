@@ -28,16 +28,16 @@ class setType(DjangoObjectType):
         return ImmovableProperties.objects.filter(
             profile__in=str(self.id)).values()
 
-    investor_experience = graphene.List(InvestorExperienceOutput)       
+    investor_experiences = graphene.List(InvestorExperiencesOutput)       
 
-    def resolve_investor_experience(self, info):
-        return InvestorExperience.objects.filter(
+    def resolve_investor_experiences(self, info):
+        return InvestorExperiences.objects.filter(
             profile__in=str(self.id)).values() 
 
-    insurance = graphene.List(InsuranceOutput)
+    insurances = graphene.List(InsurancesOutput)
 
-    def relsove_insurance(self, info):
-        return Insurance.objects.filter(
+    def relsove_insurances(self, info):
+        return Insurances.objects.filter(
             profile__in=str(self.id)).values()
         
 
@@ -53,7 +53,8 @@ class setProfile(graphene.Mutation):
         cpfFromAuth = str(getCPFFromAuth(token))
 
         immovable_properties = profile_data.pop("immovable_properties")
-        investor_experience = profile_data.pop("investor_experience")
+        investor_experiences = profile_data.pop("investor_experience")
+        insurances = profile_data.pop("insurances")
 
         profile, created = Profile.objects.update_or_create(cpf=cpfFromAuth,
                                                             defaults={
@@ -83,29 +84,29 @@ class setProfile(graphene.Mutation):
                                                            )
                 immovable_properties.save()
 
-        if investor_experience:
-            InvestorExperience.objects.filter(profile=profile).delete()
-            for investor_experiency in investor_experience:
-                investor_experience = InvestorExperience(profile=profile,
-                                                         kind=investor_experiency['kind'],
-                                                         value=investor_experiency['value'],
+        if investor_experiences:
+            InvestorExperiences.objects.filter(profile=profile).delete()
+            for investor_experience in investor_experiences:
+                investor_experiences = InvestorExperiences(profile=profile,
+                                                         kind=investor_experience['kind'],
+                                                         value=investor_experience['value'],
                                                          )
-                investor_experience.save()
+                investor_experiences.save()
 
 
-        if insurance:
-            Insurance.objects.filter(profile=profile).delete()
-            for insurancy in insurance:
-                insurance = Insurance(profile=profile,
-                                      insurance_type=insurancy['insurance_type'],
-                                      value=insurancy['value'],
-                                      monthly_fee=insurancy['monthly_fee'],
-                                      coverage=insurancy['coverage'],
-                                      company=insuracy['company'],
+        if insurances:
+            Insurances.objects.filter(profile=profile).delete()
+            for insurance in insurances:
+                insurances = Insurances(profile=profile,
+                                      kind=insurance['kind'],
+                                      value=insurance['value'],
+                                      monthly_fee=insurance['monthly_fee'],
+                                      coverage=insurance['coverage'],
+                                      company=insurace['company'],
                                     
                                       
                 )
-                insurace.save()
+                insuraces.save()
 
 class Mutation(graphene.ObjectType):
     set_profile = setProfile.Field()

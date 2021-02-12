@@ -17,9 +17,8 @@ class ImmovablePropertiesOutput(graphene.ObjectType):
 
 
 
-class InsuranceOutput(graphene.ObjectType):
-    profile = graphene.ID()
-    insurance_type = graphene.String(required=False)
+class InsurancesOutput(graphene.ObjectType):
+    kind = graphene.String(required=False)
     value = graphene.Float(required=False)
     monthly_fee = graphene.Boolean(required=False)
     coverage = graphene.Float(required=False)
