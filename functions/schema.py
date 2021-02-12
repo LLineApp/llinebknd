@@ -48,9 +48,9 @@ class setType(DjangoObjectType):
 
     personal_private_securities = graphene.List(PersonalPrivateSecuritiesOutput)
 
-    def resolve_personal_private_securities(self, info)
-    return PersonalPrivateSecurities.objects.filter(
-        profile__in=str(self.id)).values()
+    def resolve_personal_private_securities(self, info):
+        return PersonalPrivateSecurities.objects.filter(
+            profile__in=str(self.id)).values()
 
 class setProfile(graphene.Mutation):
     profile = graphene.Field(setType)
@@ -130,15 +130,15 @@ class setProfile(graphene.Mutation):
                 investment_portfolios.save()
 
         if personal_private_securities:
-            PersonalPrivateSecurities.objects.filter(profiule=profile).delete()
-            for personal_private_securitie in personal_private_securities:
+            PersonalPrivateSecurities.objects.filter(profile=profile).delete()
+            for personal_private_security in personal_private_securities:
                 personal_private_securities = PersonalPrivateSecurities(profile=profile,
-                                                                        bank=personal_private_securitie['bank'],
-                                                                        enterprise=personal_private_securitie['enterprise'],
-                                                                        cooperative=personal_private_securitie['cooperative'],
-                                                                        survival=personal_private_securitie['survival'],
-                                                                        table=personal_private_securitie['table'],
-                                                                        balance=personal_private_securitie['table'],            
+                                                                        bank=personal_private_securitiy['bank'],
+                                                                        enterprise=personal_private_securitiy['enterprise'],
+                                                                        cooperative=personal_private_securitiy['cooperative'],
+                                                                        survival=personal_private_securitiy['survival'],
+                                                                        table=personal_private_securitiy['table'],
+                                                                        balance=personal_private_securitiy['balance'],            
                 )
                 personal_private_securities.save()
 
