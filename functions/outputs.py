@@ -37,3 +37,8 @@ class PersonalPrivateSecuritiesOutput(graphene.ObjectType):
     survival = graphene.String(required=False)
     table = graphene.String(required=False)
     balance = graphene.Float(required=False)
+
+class FixedIncomeSecuritiesOutput(graphene.ObjectType):
+    kind = graphene.String(required=False)
+    value = graphene.Float(required=False)
+    tx = graphene.Float(required=True)
