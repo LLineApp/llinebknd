@@ -150,19 +150,19 @@ class setProfile(graphene.Mutation):
                 personal_private_securities.save()
 
 
-          if fixed_income_securities:
-              FixedIncomeSecurities.objects.filter(profile=profile).delete()
-              for fixed_income_security in fixed_income_securities:
-                  fixed_income_securities = FixedIncomeSecurities(profile=profile,
-                                                                  kind=fixed_income_security['kind'],
-                                                                  value=fixed_income_security['value'],
-                                                                  tx=fixed_income_security ['tx'], 
+        if fixed_income_securities:
+            FixedIncomeSecurities.objects.filter(profile=profile).delete()
+            for fixed_income_security in fixed_income_securities:
+                fixed_income_securities = FixedIncomeSecurities(profile=profile,
+                                                                kind=fixed_income_security['kind'],
+                                                                value=fixed_income_security['value'],
+                                                                tx=fixed_income_security ['tx'], 
                   
-                  )  
-                  fixed_income_securities.save()
+                )  
+                fixed_income_securities.save()
 
-                  
-                    
+
+
 class Mutation(graphene.ObjectType):
     set_profile = setProfile.Field()
 
