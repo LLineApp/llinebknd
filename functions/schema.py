@@ -39,6 +39,11 @@ class setType(DjangoObjectType):
         return Insurances.objects.filter(
             profile__in=str(self.id)).values()
 
+    investment_portfolios = graphene.List(InvestmentPortfoliosOutput)
+
+    def resolve_investment_portfolios(self, info):
+        return InvestmentPortfolios.objects.filter(
+            profile__in=str(self.id)).values()
 
 class setProfile(graphene.Mutation):
     profile = graphene.Field(setType)
@@ -53,6 +58,7 @@ class setProfile(graphene.Mutation):
         immovable_properties = profile_data.pop("immovable_properties")
         investor_experiences = profile_data.pop("investor_experiences")
         insurances = profile_data.pop("insurances")
+        investment_portfolios = profile_data.pop("investment_portfolios")
 
         profile, created = Profile.objects.update_or_create(cpf=cpfFromAuth,
                                                             defaults={
@@ -105,6 +111,15 @@ class setProfile(graphene.Mutation):
                                         )
                 insurances.save()
 
+        if investment_portfolios:
+            InvestmentPortfolios.objects.filter(profile=profile).delete()
+            for investment_portfolio in investment_portfolios:
+                investment_portfolios = InvestmentPortfolios(profile=profile,
+                                                           kind=investment_portfolio['kind'],
+                                                           value=investment_portfolio['value'],
+                                                           tx=investment_portfolio['tx'],
+                )
+                investment_portfolios.save()
 
 class Mutation(graphene.ObjectType):
     set_profile = setProfile.Field()

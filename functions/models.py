@@ -62,4 +62,10 @@ class Insurances(models.Model):
     monthly_fee = models.NullBooleanField(blank=True, null=True)
     coverage = models.FloatField(blank=True, null=True)
     company = models.TextField(blank=True, null=True)
-    
+
+
+class InvestmentPortfolios(models.Model):
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    kind = models.TextField(blank=True, null=True)
+    value = models.FloatField(blank=True, null=True)
+    tx = models.FloatField(blank=True, null=True)

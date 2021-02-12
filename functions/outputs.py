@@ -23,3 +23,9 @@ class InsurancesOutput(graphene.ObjectType):
     monthly_fee = graphene.Boolean(required=False)
     coverage = graphene.Float(required=False)
     company = graphene.String(required=False)
+
+
+class InvestmentPortfoliosOutput(graphene.ObjectType):
+    kind = graphene.String(required=False)
+    value = graphene.Float(required=False)
+    tx = graphene.Float(required=False)
