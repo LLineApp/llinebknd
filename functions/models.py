@@ -79,3 +79,10 @@ class PersonalPrivateSecurities(models.Model):
     survival = models.TextField(blank=True, null=True)
     table = models.TextField(blank=True, null=True)
     balance = models.FloatField(blank=True, null=True)
+
+
+class FixedIncomeSecurities(models.Model):
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    kind  = models.TextField(blank=True, null=True)
+    value = models.FloatField(blank=True, null=True)
+    tx = models.FloatField(blank=True, null=True)

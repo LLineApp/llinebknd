@@ -52,6 +52,12 @@ class setType(DjangoObjectType):
         return PersonalPrivateSecurities.objects.filter(
             profile__in=str(self.id)).values()
 
+    fixed_income_securities = graphene.List(FixedIncomeSecuritiesOutput)
+
+    def resolve_fixed_income_securities(self, info):
+        return FixedIncomeSecurities.objects.filter(
+            profile__in=str(self.id)).values()
+
 class setProfile(graphene.Mutation):
     profile = graphene.Field(setType)
 
@@ -67,6 +73,7 @@ class setProfile(graphene.Mutation):
         insurances = profile_data.pop("insurances")
         investment_portfolios = profile_data.pop("investment_portfolios")
         personal_private_securities = profile_data.pop("personal_private_securities")
+        fixed_income_securities = profile_data.pop("fixed_income_securities")
 
         profile, created = Profile.objects.update_or_create(cpf=cpfFromAuth,
                                                             defaults={
@@ -142,6 +149,20 @@ class setProfile(graphene.Mutation):
                 )
                 personal_private_securities.save()
 
+
+          if fixed_income_securities:
+              FixedIncomeSecurities.objects.filter(profile=profile).delete()
+              for fixed_income_security in fixed_income_securities:
+                  fixed_income_securities = FixedIncomeSecurities(profile=profile,
+                                                                  kind=fixed_income_security['kind'],
+                                                                  value=fixed_income_security['value'],
+                                                                  tx=fixed_income_security ['tx'], 
+                  
+                  )  
+                  fixed_income_securities.save()
+
+                  
+                    
 class Mutation(graphene.ObjectType):
     set_profile = setProfile.Field()
 
