@@ -45,6 +45,13 @@ class setType(DjangoObjectType):
         return InvestmentPortfolios.objects.filter(
             profile__in=str(self.id)).values()
 
+
+    personal_private_securities = graphene.List(PersonalPrivateSecuritiesOutput)
+
+    def resolve_personal_private_securities(self, info)
+    return PersonalPrivateSecurities.objects.filter(
+        profile__in=str(self.id)).values()
+
 class setProfile(graphene.Mutation):
     profile = graphene.Field(setType)
 
@@ -59,6 +66,7 @@ class setProfile(graphene.Mutation):
         investor_experiences = profile_data.pop("investor_experiences")
         insurances = profile_data.pop("insurances")
         investment_portfolios = profile_data.pop("investment_portfolios")
+        personal_private_securities = profile_data.pop("personal_private_securities")
 
         profile, created = Profile.objects.update_or_create(cpf=cpfFromAuth,
                                                             defaults={
@@ -120,6 +128,19 @@ class setProfile(graphene.Mutation):
                                                            tx=investment_portfolio['tx'],
                 )
                 investment_portfolios.save()
+
+        if personal_private_securities:
+            PersonalPrivateSecurities.objects.filter(profiule=profile).delete()
+            for personal_private_securitie in personal_private_securities:
+                personal_private_securities = PersonalPrivateSecurities(profile=profile,
+                                                                        bank=personal_private_securitie['bank'],
+                                                                        enterprise=personal_private_securitie['enterprise'],
+                                                                        cooperative=personal_private_securitie['cooperative'],
+                                                                        survival=personal_private_securitie['survival'],
+                                                                        table=personal_private_securitie['table'],
+                                                                        balance=personal_private_securitie['table'],            
+                )
+                personal_private_securities.save()
 
 class Mutation(graphene.ObjectType):
     set_profile = setProfile.Field()

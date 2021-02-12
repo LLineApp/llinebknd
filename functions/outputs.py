@@ -16,7 +16,6 @@ class ImmovablePropertiesOutput(graphene.ObjectType):
     insurance_company = graphene.String(required=False)
 
 
-
 class InsurancesOutput(graphene.ObjectType):
     kind = graphene.String(required=False)
     value = graphene.Float(required=False)
@@ -29,3 +28,12 @@ class InvestmentPortfoliosOutput(graphene.ObjectType):
     kind = graphene.String(required=False)
     value = graphene.Float(required=False)
     tx = graphene.Float(required=False)
+
+
+class PersonalPrivateSecuritiesOutput(graphene.ObjectType):
+    bank = graphene.String(required=False)
+    enterprise = graphene.String(required=False)
+    cooperative = graphene.String(required=False)
+    survival = graphene.String(required=False)
+    table = graphene.String(required=False)
+    balance = graphene.Float(required=False)

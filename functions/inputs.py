@@ -1,12 +1,19 @@
 import graphene
 from graphene_django import DjangoObjectType
 
+class PersonalPrivateSecuritiesInput(graphene.InputObjectType):
+    bank = graphene.String(required=False)
+    enterprise = graphene.String(required=False)
+    cooperative = graphene.String(required=False)
+    survival = graphene.String(required=False)
+    table = graphene.String(required=False)
+    balance = graphene.Float(required=False)
+
 
 class InvestmentPortfoliosInput(graphene.InputObjectType):
     kind = graphene.String(required=False)
     value = graphene.Float(required=False)
     tx = graphene.Float(required=False)
-
 
 
 class InsurancesInput(graphene.InputObjectType):
@@ -66,4 +73,5 @@ class ProfileInput(graphene.InputObjectType):
     investor_experiences = graphene.List(InvestorExperiencesInput, required=False)
     insurances = graphene.List(InsurancesInput, required=False)
     investment_portfolios = graphene.List(InvestmentPortfoliosInput, required=False)
+    personal_private_securities = graphene.List(PersonalPrivateSecuritiesInput, required=False)
 
