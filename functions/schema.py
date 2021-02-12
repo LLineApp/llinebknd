@@ -113,11 +113,11 @@ class setProfile(graphene.Mutation):
 
         if investment_portfolios:
             InvestmentPortfolios.objects.filter(profile=profile).delete()
-            for investment_portfolito in investment_portfolios:
+            for investment_portfolio in investment_portfolios:
                 investment_portfolios = InvestmentPortfolios(profile=profile,
-                                                           investment_portfolio_type=investment_portfolito['investment_portfolio_type'],
-                                                           value=investment_portfolito['value'],
-                                                           tx=investment_portfolit['tx'],
+                                                           kind=investment_portfolito['kind'],
+                                                           value=investment_portfolio['value'],
+                                                           tx=investment_portfolio['tx'],
                 )
                 investment_portfolios.save()
 
