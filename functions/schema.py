@@ -11,6 +11,11 @@ from .inputs import *
 from .outputs import *
 
 
+class FinancialAdvisorsType(DjangoObjectType):
+    class Meta:
+        model = FinancialAdvisors
+
+
 class setType(DjangoObjectType):
     class Meta:
         model = Profile
@@ -45,8 +50,8 @@ class setType(DjangoObjectType):
         return InvestmentPortfolios.objects.filter(
             profile__in=str(self.id)).values()
 
-
-    personal_private_securities = graphene.List(PersonalPrivateSecuritiesOutput)
+    personal_private_securities = graphene.List(
+        PersonalPrivateSecuritiesOutput)
 
     def resolve_personal_private_securities(self, info):
         return PersonalPrivateSecurities.objects.filter(
@@ -58,6 +63,7 @@ class setType(DjangoObjectType):
         return FixedIncomeSecurities.objects.filter(
             profile__in=str(self.id)).values()
 
+
 class setProfile(graphene.Mutation):
     profile = graphene.Field(setType)
 
@@ -68,12 +74,25 @@ class setProfile(graphene.Mutation):
     def mutate(self, info, token, profile_data=None):
         cpfFromAuth = str(getCPFFromAuth(token))
 
+        phones = profile_data.pop("phones")
         immovable_properties = profile_data.pop("immovable_properties")
         investor_experiences = profile_data.pop("investor_experiences")
         insurances = profile_data.pop("insurances")
         investment_portfolios = profile_data.pop("investment_portfolios")
-        personal_private_securities = profile_data.pop("personal_private_securities")
+        personal_private_securities = profile_data.pop(
+            "personal_private_securities")
         fixed_income_securities = profile_data.pop("fixed_income_securities")
+        financial_advisor = profile_data.pop("financial_advisor")
+
+        if financial_advisor:
+            financial_advisor, created = FinancialAdvisors.objects.get_or_create(fullname=financial_advisor['fullname'],
+                                                                                 register=financial_advisor['register'],
+                                                                                 company=financial_advisor['company'],
+                                                                                 )
+            if created:
+                financial_advisor.save()
+
+        profile_data['financial_advisor_id'] = financial_advisor.id
 
         profile, created = Profile.objects.update_or_create(cpf=cpfFromAuth,
                                                             defaults={
@@ -82,9 +101,9 @@ class setProfile(graphene.Mutation):
         if created:
             profile.save()
 
-        if profile_data.phones:
+        if phones:
             Phones.objects.filter(profile=profile).delete()
-            for phone in profile_data.phones:
+            for phone in phones:
                 phones = Phones(profile=profile,
                                 phone=phone,
                                 )
@@ -130,10 +149,10 @@ class setProfile(graphene.Mutation):
             InvestmentPortfolios.objects.filter(profile=profile).delete()
             for investment_portfolio in investment_portfolios:
                 investment_portfolios = InvestmentPortfolios(profile=profile,
-                                                           kind=investment_portfolio['kind'],
-                                                           value=investment_portfolio['value'],
-                                                           tx=investment_portfolio['tx'],
-                )
+                                                             kind=investment_portfolio['kind'],
+                                                             value=investment_portfolio['value'],
+                                                             tx=investment_portfolio['tx'],
+                                                             )
                 investment_portfolios.save()
 
         if personal_private_securities:
@@ -141,14 +160,15 @@ class setProfile(graphene.Mutation):
             for personal_private_security in personal_private_securities:
                 personal_private_securities = PersonalPrivateSecurities(profile=profile,
                                                                         bank=personal_private_security['bank'],
-                                                                        enterprise=personal_private_security['enterprise'],
-                                                                        cooperative=personal_private_security['cooperative'],
+                                                                        enterprise=personal_private_security[
+                                                                            'enterprise'],
+                                                                        cooperative=personal_private_security[
+                                                                            'cooperative'],
                                                                         survival=personal_private_security['survival'],
                                                                         table=personal_private_security['table'],
-                                                                        balance=personal_private_security['balance'],            
-                )
+                                                                        balance=personal_private_security['balance'],
+                                                                        )
                 personal_private_securities.save()
-
 
         if fixed_income_securities:
             FixedIncomeSecurities.objects.filter(profile=profile).delete()
@@ -156,11 +176,9 @@ class setProfile(graphene.Mutation):
                 fixed_income_securities = FixedIncomeSecurities(profile=profile,
                                                                 kind=fixed_income_security['kind'],
                                                                 value=fixed_income_security['value'],
-                                                                tx=fixed_income_security ['tx'], 
-                  
-                )  
+                                                                tx=fixed_income_security['tx'],
+                                                                )
                 fixed_income_securities.save()
-
 
 
 class Mutation(graphene.ObjectType):

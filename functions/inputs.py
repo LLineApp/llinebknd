@@ -2,16 +2,16 @@ import graphene
 from graphene_django import DjangoObjectType
 
 
-class FinancialAdvisorInput(graphene.InputObjectType):
-    fullname = graphene.String(required=True)
-    register = graphene.String(required=True)
-    company = graphene.String(required=True)
+class FinancialAdvisorsInput(graphene.InputObjectType):
+    fullname = graphene.String(required=False)
+    register = graphene.String(required=False)
+    company = graphene.String(required=False)
 
 
 class FixedIncomeSecuritiesInput(graphene.InputObjectType):
     kind = graphene.String(required=False)
     value = graphene.Float(required=False)
-    tx = graphene.Float(required=True)
+    tx = graphene.Float(required=False)
 
 
 class PersonalPrivateSecuritiesInput(graphene.InputObjectType):
@@ -82,11 +82,16 @@ class ProfileInput(graphene.InputObjectType):
     additional_info = graphene.String(required=False)
     portfolio_income = graphene.Float(required=False)
     phones = graphene.List(graphene.String, required=False)
-    immovable_properties = graphene.List(ImmovablePropertiesInput, required=False)
-    investor_experiences = graphene.List(InvestorExperiencesInput, required=False)
+    immovable_properties = graphene.List(
+        ImmovablePropertiesInput, required=False)
+    investor_experiences = graphene.List(
+        InvestorExperiencesInput, required=False)
     insurances = graphene.List(InsurancesInput, required=False)
-    investment_portfolios = graphene.List(InvestmentPortfoliosInput, required=False)
-    personal_private_securities = graphene.List(PersonalPrivateSecuritiesInput, required=False)
-    fixed_income_securities = graphene.List(FixedIncomeSecuritiesInput, required=False)
-    financial_advisor = graphene.Field(FinancialAdvisorInput, required=False)
+    investment_portfolios = graphene.List(
+        InvestmentPortfoliosInput, required=False)
+    personal_private_securities = graphene.List(
+        PersonalPrivateSecuritiesInput, required=False)
+    fixed_income_securities = graphene.List(
+        FixedIncomeSecuritiesInput, required=False)
+    financial_advisor = graphene.Field(FinancialAdvisorsInput, required=False)
     accept_financial_advisor_contact = graphene.Boolean(required=False)

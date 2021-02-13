@@ -7,6 +7,7 @@ class FinancialAdvisors(models.Model):
     register = models.TextField(blank=False, null=True)
     company = models.TextField(blank=False, null=True)
 
+
 class Profile(models.Model):
     cpf = models.TextField(blank=False)
     email = models.EmailField(blank=True, null=True)
@@ -19,7 +20,8 @@ class Profile(models.Model):
     business_email = models.EmailField(blank=True, null=True)
     business_kind = models.TextField(blank=True, null=True)
     business_field = models.TextField(blank=True, null=True)
-    company_has_private_insurance = models.NullBooleanField(blank=True, null=True)
+    company_has_private_insurance = models.NullBooleanField(
+        blank=True, null=True)
     social_security_value = models.FloatField(blank=True, null=True)
     private_security_your_value = models.FloatField(blank=True, null=True)
     private_security_company_value = models.FloatField(blank=True, null=True)
@@ -38,11 +40,14 @@ class Profile(models.Model):
     have_financial_concerns = models.TextField(blank=True, null=True)
     additional_info = models.TextField(blank=True, null=True)
     portfolio_income = models.FloatField(blank=True, null=True)
-    financial_advisor = models.ForeignKey(FinancialAdvisors, null=True ,on_delete=models.CASCADE)
-    accept_financial_advisor_contact = models.NullBooleanField(blank=True, null=True)
+    financial_advisor = models.ForeignKey(
+        FinancialAdvisors, null=True, on_delete=models.SET_NULL)
+    accept_financial_advisor_contact = models.NullBooleanField(
+        blank=True, null=True)
+
 
 class ImmovableProperties(models.Model):
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    profile = models.ForeignKey(Profile, null=True, on_delete=models.SET_NULL)
     description = models.TextField(blank=True, null=True)
     value = models.FloatField(blank=True, null=True)
     rented = models.NullBooleanField(blank=True, null=True)
@@ -52,18 +57,18 @@ class ImmovableProperties(models.Model):
 
 
 class Phones(models.Model):
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    profile = models.ForeignKey(Profile, null=True, on_delete=models.SET_NULL)
     phone = models.TextField(blank=True, null=True)
 
 
 class InvestorExperiences(models.Model):
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    profile = models.ForeignKey(Profile, null=True, on_delete=models.SET_NULL)
     kind = models.TextField(blank=True, null=True)
     value = models.FloatField(blank=True, null=True)
 
 
 class Insurances(models.Model):
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    profile = models.ForeignKey(Profile, null=True, on_delete=models.SET_NULL)
     kind = models.TextField(blank=True, null=True)
     value = models.FloatField(blank=True, null=True)
     monthly_fee = models.NullBooleanField(blank=True, null=True)
@@ -72,14 +77,14 @@ class Insurances(models.Model):
 
 
 class InvestmentPortfolios(models.Model):
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    profile = models.ForeignKey(Profile, null=True, on_delete=models.SET_NULL)
     kind = models.TextField(blank=True, null=True)
     value = models.FloatField(blank=True, null=True)
     tx = models.FloatField(blank=True, null=True)
 
 
 class PersonalPrivateSecurities(models.Model):
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    profile = models.ForeignKey(Profile, null=True, on_delete=models.SET_NULL)
     bank = models.TextField(blank=True, null=True)
     enterprise = models.TextField(blank=True, null=True)
     cooperative = models.TextField(blank=True, null=True)
@@ -89,8 +94,7 @@ class PersonalPrivateSecurities(models.Model):
 
 
 class FixedIncomeSecurities(models.Model):
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
-    kind  = models.TextField(blank=True, null=True)
+    profile = models.ForeignKey(Profile, null=True, on_delete=models.SET_NULL)
+    kind = models.TextField(blank=True, null=True)
     value = models.FloatField(blank=True, null=True)
     tx = models.FloatField(blank=True, null=True)
-
