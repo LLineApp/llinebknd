@@ -1,5 +1,6 @@
 import graphene
 from graphene_django import DjangoObjectType
+from .models import *
 
 
 class InvestorExperiencesOutput(graphene.ObjectType):
@@ -42,3 +43,9 @@ class FixedIncomeSecuritiesOutput(graphene.ObjectType):
     kind = graphene.String(required=False)
     value = graphene.Float(required=False)
     tx = graphene.Float(required=True)
+
+class ChildrenOutput(graphene.ObjectType):
+    fullname = graphene.String(required=False)
+    birthdate = graphene.Date(required=False)
+    occupation_training = graphene.String(required=False)
+    additional_info = graphene.String(required=False)

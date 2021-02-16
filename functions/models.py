@@ -61,6 +61,14 @@ class Phones(models.Model):
     phone = models.TextField(blank=True, null=True)
 
 
+class Children(models.Model):
+    profile = models.ForeignKey(Profile, null=True, on_delete=models.SET_NULL)
+    fullname = models.TextField(blank=True, null=True)
+    birthdate = models.DateField(blank=True, null=True)
+    occupation_training = models.TextField(blank=True, null=True)
+    additional_info = models.TextField(blank=True, null=True)
+
+
 class InvestorExperiences(models.Model):
     profile = models.ForeignKey(Profile, null=True, on_delete=models.SET_NULL)
     kind = models.TextField(blank=True, null=True)

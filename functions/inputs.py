@@ -51,6 +51,13 @@ class ImmovablePropertiesInput(graphene.InputObjectType):
     insurance_company = graphene.String(required=False)
 
 
+class ChildrenInput(graphene.InputObjectType):
+    fullname = graphene.String(required=False)
+    birthdate = graphene.Date(required=False)
+    occupation_training = graphene.String(required=False)
+    additional_info = graphene.String(required=False)
+
+
 class ProfileInput(graphene.InputObjectType):
     email = graphene.String(required=False)
     fullname = graphene.String(required=False)
@@ -82,6 +89,7 @@ class ProfileInput(graphene.InputObjectType):
     additional_info = graphene.String(required=False)
     portfolio_income = graphene.Float(required=False)
     phones = graphene.List(graphene.String, required=False)
+    children = graphene.List(ChildrenInput, required=False)
     immovable_properties = graphene.List(
         ImmovablePropertiesInput, required=False)
     investor_experiences = graphene.List(
