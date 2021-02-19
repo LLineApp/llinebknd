@@ -26,6 +26,12 @@ class setType(DjangoObjectType):
         return Phones.objects.filter(
             profile__in=str(self.id)).values_list('phone', flat=True)
 
+    children = graphene.List(ChildrenOutput)
+
+    def resolve_children(self, info):
+        return Children.objects.filter(
+            profile__in=str(self.id)).values()
+
     immovable_properties = graphene.List(ImmovablePropertiesOutput)
 
     def resolve_immovable_properties(self, info):
@@ -75,6 +81,7 @@ class setProfile(graphene.Mutation):
         cpfFromAuth = str(getCPFFromAuth(token))
 
         phones = profile_data.pop("phones")
+        children = profile_data.pop("children")
         immovable_properties = profile_data.pop("immovable_properties")
         investor_experiences = profile_data.pop("investor_experiences")
         insurances = profile_data.pop("insurances")
@@ -108,6 +115,17 @@ class setProfile(graphene.Mutation):
                                 phone=phone,
                                 )
                 phones.save()
+
+        if children:
+            Children.objects.filter(profile=profile).delete()
+            for child in children:
+                children = Children(profile=profile,
+                                    fullname=child['fullname'],
+                                    birthdate=child['birthdate'],
+                                    occupation_training=child['occupation_training'],
+                                    additional_info=child['additional_info'],
+                                    )
+                children.save()
 
         if immovable_properties:
             ImmovableProperties.objects.filter(profile=profile).delete()
