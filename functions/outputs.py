@@ -33,8 +33,8 @@ class InvestmentPortfoliosOutput(graphene.ObjectType):
 
 class PersonalPrivateSecuritiesOutput(graphene.ObjectType):
     bank = graphene.String(required=False)
-    enterprise = graphene.String(required=False)
-    cooperative = graphene.String(required=False)
+    enterprise = graphene.Boolean(required=False)
+    cooperative = graphene.Boolean(required=False)
     survival = graphene.String(required=False)
     table = graphene.String(required=False)
     balance = graphene.Float(required=False)
@@ -42,7 +42,7 @@ class PersonalPrivateSecuritiesOutput(graphene.ObjectType):
 class FixedIncomeSecuritiesOutput(graphene.ObjectType):
     kind = graphene.String(required=False)
     value = graphene.Float(required=False)
-    tx = graphene.Float(required=True)
+    tx = graphene.Float(required=False)
 
 class ChildrenOutput(graphene.ObjectType):
     fullname = graphene.String(required=False)

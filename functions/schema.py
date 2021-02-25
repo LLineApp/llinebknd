@@ -80,26 +80,52 @@ class setProfile(graphene.Mutation):
     def mutate(self, info, token, profile_data=None):
         cpfFromAuth = str(getCPFFromAuth(token))
 
-        phones = profile_data.pop("phones")
-        children = profile_data.pop("children")
-        immovable_properties = profile_data.pop("immovable_properties")
-        investor_experiences = profile_data.pop("investor_experiences")
-        insurances = profile_data.pop("insurances")
-        investment_portfolios = profile_data.pop("investment_portfolios")
-        personal_private_securities = profile_data.pop(
-            "personal_private_securities")
-        fixed_income_securities = profile_data.pop("fixed_income_securities")
-        financial_advisor = profile_data.pop("financial_advisor")
+        financial_advisor = []
+        if profile_data.financial_advisor:
+            financial_advisor = profile_data.pop("financial_advisor")
+
+        phones = []
+        if profile_data.phones:
+            phones = profile_data.pop("phones")
+
+        children = []
+        if profile_data.children:
+            children = profile_data.pop("children")
+
+        immovable_properties = []
+        if profile_data.immovable_properties:
+            immovable_properties = profile_data.pop("immovable_properties")
+
+        investor_experiences = []
+        if profile_data.investor_experiences:
+            investor_experiences = profile_data.pop("investor_experiences")
+
+        insurances = []
+        if profile_data.insurances:
+            insurances = profile_data.pop("insurances")
+
+        investment_portfolios = []
+        if profile_data.investment_portfolios:
+            investment_portfolios = profile_data.pop("investment_portfolios")
+
+        personal_private_securities = []
+        if profile_data.personal_private_securities:
+            personal_private_securities = profile_data.pop(
+                "personal_private_securities")
+
+        fixed_income_securities = []
+        if profile_data.fixed_income_securities:
+            fixed_income_securities = profile_data.pop(
+                "fixed_income_securities")
 
         if financial_advisor:
-            financial_advisor, created = FinancialAdvisors.objects.get_or_create(fullname=financial_advisor['fullname'],
-                                                                                 register=financial_advisor['register'],
-                                                                                 company=financial_advisor['company'],
-                                                                                 )
+            _financial_advisor, created = FinancialAdvisors.objects.get_or_create(fullname=financial_advisor['fullname'],
+                                                                                  register=financial_advisor['register'],
+                                                                                  company=financial_advisor['company'],
+                                                                                  )
             if created:
-                financial_advisor.save()
-
-        profile_data['financial_advisor_id'] = financial_advisor.id
+                _financial_advisor.save()
+            profile_data['financial_advisor'] = _financial_advisor
 
         profile, created = Profile.objects.update_or_create(cpf=cpfFromAuth,
                                                             defaults={

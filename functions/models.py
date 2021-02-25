@@ -29,6 +29,7 @@ class Profile(models.Model):
     business_email = models.EmailField(blank=True, null=True)
     business_kind = models.TextField(blank=True, null=True)
     business_field = models.TextField(blank=True, null=True)
+    business_phones = models.TextField(blank=True, null=True)
     company_has_private_insurance = models.NullBooleanField(
         blank=True, null=True)
     social_security_value = models.FloatField(blank=True, null=True)
@@ -103,8 +104,8 @@ class InvestmentPortfolios(models.Model):
 class PersonalPrivateSecurities(models.Model):
     profile = models.ForeignKey(Profile, null=True, on_delete=models.SET_NULL)
     bank = models.TextField(blank=True, null=True)
-    enterprise = models.TextField(blank=True, null=True)
-    cooperative = models.TextField(blank=True, null=True)
+    enterprise = models.NullBooleanField(blank=True, null=True)
+    cooperative = models.NullBooleanField(blank=True, null=True)
     survival = models.TextField(blank=True, null=True)
     table = models.TextField(blank=True, null=True)
     balance = models.FloatField(blank=True, null=True)
