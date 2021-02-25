@@ -16,8 +16,8 @@ class FixedIncomeSecuritiesInput(graphene.InputObjectType):
 
 class PersonalPrivateSecuritiesInput(graphene.InputObjectType):
     bank = graphene.String(required=False)
-    enterprise = graphene.String(required=False)
-    cooperative = graphene.String(required=False)
+    enterprise = graphene.Boolean(required=False)
+    cooperative = graphene.Boolean(required=False)
     survival = graphene.String(required=False)
     table = graphene.String(required=False)
     balance = graphene.Float(required=False)
@@ -78,6 +78,7 @@ class ProfileInput(graphene.InputObjectType):
     business_email = graphene.String(required=False)
     business_kind = graphene.String(required=False)
     business_field = graphene.String(required=False)
+    business_phones = graphene.String(required=False)
     company_has_private_insurance = graphene.Boolean(required=False)
     income_tax_declaration_type = graphene.String(required=False)
     social_security_value = graphene.Float(required=False)
