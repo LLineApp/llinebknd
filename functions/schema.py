@@ -6,9 +6,15 @@ from .models import *
 from django.db.models import Q
 
 from .auth import getCPFFromAuth
+from .advisor import advisorsLink
 
 from .inputs import *
 from .outputs import *
+
+
+class setAdvisorsLink(DjangoObjectType):
+    class Meta:
+        model = AdvisorsLink
 
 
 class FinancialAdvisorsType(DjangoObjectType):
@@ -244,5 +250,19 @@ class Query(graphene.ObjectType):
             profile = Profile.objects.all().filter(filter)
 
             return profile
+
+        pass
+
+    get_advisors_link = graphene.Field(setAdvisorsLink, token=graphene.String(
+        required=False), link=graphene.String(required=False))
+
+    def resolve_get_advisors_link(self, info, token=None, link=None):
+        if token:
+            cpf = str(getCPFFromAuth(token))
+            if cpf:
+                if link:
+                    return advisorsLink.getAdvisorByLink(link)
+
+                return advisorsLink.createAdvisorsLink(cpf)
 
         pass
