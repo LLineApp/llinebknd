@@ -12,11 +12,6 @@ from .inputs import *
 from .outputs import *
 
 
-class setAdvisorsLink(DjangoObjectType):
-    class Meta:
-        model = AdvisorsLink
-
-
 class FinancialAdvisorsType(DjangoObjectType):
     class Meta:
         model = FinancialAdvisors
@@ -231,8 +226,33 @@ class setProfile(graphene.Mutation):
                 fixed_income_securities.save()
 
 
+class setAdvisorsLinkData(DjangoObjectType):
+    class Meta:
+        model = AdvisorsLink
+
+
+class setAdvisorsLink(graphene.Mutation):
+    advisorsLinkData = graphene.Field(setAdvisorsLinkData)
+
+    class Arguments:
+        token = graphene.String()
+        link = graphene.String(required=False)
+
+    def mutate(self, info, token, link=None):
+        if token:
+            cpf = str(getCPFFromAuth(token))
+            if cpf:
+                if link:
+                    advisorsLinkData = advisorsLink.getAdvisorByLink(link)
+                else:
+                    advisorsLinkData =  advisorsLink.createAdvisorsLink(cpf)
+
+        return setAdvisorsLink(advisorsLinkData = advisorsLinkData)
+
+
 class Mutation(graphene.ObjectType):
     set_profile = setProfile.Field()
+    set_advisors_link = setAdvisorsLink.Field()
 
 
 class Query(graphene.ObjectType):
@@ -250,19 +270,5 @@ class Query(graphene.ObjectType):
             profile = Profile.objects.all().filter(filter)
 
             return profile
-
-        pass
-
-    get_advisors_link = graphene.Field(setAdvisorsLink, token=graphene.String(
-        required=False), link=graphene.String(required=False))
-
-    def resolve_get_advisors_link(self, info, token=None, link=None):
-        if token:
-            cpf = str(getCPFFromAuth(token))
-            if cpf:
-                if link:
-                    return advisorsLink.getAdvisorByLink(link)
-
-                return advisorsLink.createAdvisorsLink(cpf)
 
         pass
