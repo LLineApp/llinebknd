@@ -6,6 +6,7 @@ from .models import *
 from django.db.models import Q
 
 from .auth import getCPFFromAuth
+from .advisor import advisorsLink
 
 from .inputs import *
 from .outputs import *
@@ -225,8 +226,33 @@ class setProfile(graphene.Mutation):
                 fixed_income_securities.save()
 
 
+class setAdvisorsLinkData(DjangoObjectType):
+    class Meta:
+        model = AdvisorsLink
+
+
+class setAdvisorsLink(graphene.Mutation):
+    advisorsLinkData = graphene.Field(setAdvisorsLinkData)
+
+    class Arguments:
+        token = graphene.String()
+        link = graphene.String(required=False)
+
+    def mutate(self, info, token, link=None):
+        if token:
+            cpf = str(getCPFFromAuth(token))
+            if cpf:
+                if link:
+                    advisorsLinkData = advisorsLink.getAdvisorByLink(link)
+                else:
+                    advisorsLinkData =  advisorsLink.createAdvisorsLink(cpf)
+
+        return setAdvisorsLink(advisorsLinkData = advisorsLinkData)
+
+
 class Mutation(graphene.ObjectType):
     set_profile = setProfile.Field()
+    set_advisors_link = setAdvisorsLink.Field()
 
 
 class Query(graphene.ObjectType):

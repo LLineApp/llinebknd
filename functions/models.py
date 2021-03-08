@@ -3,9 +3,10 @@ from django.db import models
 
 
 class FinancialAdvisors(models.Model):
-    fullname = models.TextField(blank=False, null=True)
-    register = models.TextField(blank=False, null=True)
-    company = models.TextField(blank=False, null=True)
+    fullname = models.TextField(blank=True, null=True)
+    register = models.TextField(blank=True, null=True)
+    company = models.TextField(blank=True, null=True)
+    cpf = models.TextField(blank=True, null=True)
 
 
 class Profile(models.Model):
@@ -116,3 +117,8 @@ class FixedIncomeSecurities(models.Model):
     kind = models.TextField(blank=True, null=True)
     value = models.FloatField(blank=True, null=True)
     tx = models.FloatField(blank=True, null=True)
+
+class AdvisorsLink(models.Model):
+    advisor = models.ForeignKey(FinancialAdvisors, null=False, on_delete=models.CASCADE)
+    created_at = models.DateField()
+    link = models.TextField()
