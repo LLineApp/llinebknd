@@ -25,15 +25,19 @@ class setAdvisorsProfile(graphene.Mutation):
         fullname = graphene.String(required=True)
         register = graphene.String(required=True)
         company = graphene.String(required=True)
+        token = graphene.String(required=True)
 
-    def mutate(self, info, cpf, fullname, register, company):
-        advisorsProfile = FinancialAdvisors(cpf=cpf,
+    def mutate(self, info, cpf, fullname, register, company,token):
+        cpfFromAuth = str(getCPFFromAuth(token))
+        
+        if cpfFromAuth:
+            advisorsProfile = FinancialAdvisors(cpf=cpf,
                                             fullname=fullname,
                                             register=register,
                                             company=company,  
-)
-        advisorsProfile.save()
-        return setAdvisorsProfile(advisorsProfile=advisorsProfile)
+            )
+            advisorsProfile.save()
+            return setAdvisorsProfile(advisorsProfile=advisorsProfile)
 
 class setType(DjangoObjectType):
     class Meta:
