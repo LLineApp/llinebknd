@@ -17,6 +17,28 @@ class FinancialAdvisorsType(DjangoObjectType):
         model = FinancialAdvisors
 
 
+class setAdvisorsProfile(graphene.Mutation):
+    advisorsProfile = graphene.Field(FinancialAdvisorsType)
+
+    class Arguments:
+        cpf = graphene.String(required=True)
+        fullname = graphene.String(required=True)
+        register = graphene.String(required=True)
+        company = graphene.String(required=True)
+        token = graphene.String(required=True)
+
+    def mutate(self, info, cpf, fullname, register, company,token):
+        cpfFromAuth = str(getCPFFromAuth(token))
+        
+        if cpfFromAuth:
+            advisorsProfile = FinancialAdvisors(cpf=cpf,
+                                            fullname=fullname,
+                                            register=register,
+                                            company=company,  
+            )
+            advisorsProfile.save()
+            return setAdvisorsProfile(advisorsProfile=advisorsProfile)
+
 class setType(DjangoObjectType):
     class Meta:
         model = Profile
@@ -248,11 +270,12 @@ class setAdvisorsLink(graphene.Mutation):
                     advisorsLinkData =  advisorsLink.createAdvisorsLink(cpf)
 
         return setAdvisorsLink(advisorsLinkData = advisorsLinkData)
-
+    
 
 class Mutation(graphene.ObjectType):
     set_profile = setProfile.Field()
     set_advisors_link = setAdvisorsLink.Field()
+    set_advisors_profile = setAdvisorsProfile.Field()
 
 
 class Query(graphene.ObjectType):
