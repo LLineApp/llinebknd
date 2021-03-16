@@ -282,21 +282,10 @@ class Mutation(graphene.ObjectType):
 
 
 
-
-class Connection(graphene.Connection):
-    class Meta:
-        abstract = True
-
-    total_count = graphene.Int()
-
-    def resolve_total_count(self, info):
-        return self.length
-
-
 class setAdvisorsPortfolioType(DjangoObjectType):
     class Meta:
         model = Profile
-        connection_class = Connection
+        
 
 
 
@@ -333,6 +322,7 @@ class Query(graphene.ObjectType):
             )
             data = Profile.objects.all().filter(filter)
             pages = len(data)
+            data +=pages
             
             return data
 
