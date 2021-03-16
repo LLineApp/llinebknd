@@ -281,12 +281,31 @@ class Mutation(graphene.ObjectType):
     set_advisors_profile = setAdvisorsProfile.Field()
 
 
+
+
+class Connection(graphene.Connection):
+    class Meta:
+        abstract = True
+
+    total_count = graphene.Int()
+
+    def resolve_total_count(self, info):
+        return self.length
+
+
+class setAdvisorsPortfolioType(DjangoObjectType):
+    class Meta:
+        model = Profile
+        connection_class = Connection
+
+
+
 class Query(graphene.ObjectType):
     get_profile = graphene.List(setType,
                                 token=graphene.String(),
                                 )
 
-    get_advisors_portfolio = graphene.List(setType,
+    get_advisors_portfolio = graphene.List(setAdvisorsPortfolioType,
                                            token=graphene.String(),
                                            page=graphene.Int() 
                                           )
@@ -305,14 +324,17 @@ class Query(graphene.ObjectType):
 
         pass
     
-    def resolve_get_advisors_portfolio(self, info, page, token=None, **kwargs,):
+    def resolve_get_advisors_portfolio(self, info, page, token=None, **kwargs):
         if token:
             cpfFromAuth = str(getCPFFromAuth(token))
-            advisor = FinancialAdvisors.objects.get(cpf__exatc=cpfFromAuth)
-            data = Profile.objects.get(FinancialAdvisors__exact=advisor)
-            total_profile = len(data)
-
-            return data, total_profile
+            advisor = FinancialAdvisors.objects.get(cpf__exact=cpfFromAuth)
+            filter = (
+                Q(financial_advisor__exact=advisor)
+            )
+            data = Profile.objects.all().filter(filter)
+            pages = len(data)
+            
+            return data
 
         pass
 
