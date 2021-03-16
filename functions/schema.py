@@ -11,6 +11,8 @@ from .advisor import advisorsLink
 from .inputs import *
 from .outputs import *
 
+import django_filters
+
 
 class FinancialAdvisorsType(DjangoObjectType):
     class Meta:
@@ -42,6 +44,7 @@ class setAdvisorsProfile(graphene.Mutation):
 class setType(DjangoObjectType):
     class Meta:
         model = Profile
+        filter_fields = ['fullname',]
 
     phones = graphene.List(graphene.String)
 
@@ -295,3 +298,29 @@ class Query(graphene.ObjectType):
             return profile
 
         pass
+
+class Query(graphene.ObjectType):
+    client_portfolio = graphene.List(setType,
+                                     token=graphene.String(),
+                                     page=graphene.Int(),
+                                     filter_client=graphene.List(Filter_client(),
+                                     ))  
+
+    def resolve_client_portfolio(self, info, page, token=None, *filter_client, **kwargs):
+        if token:
+            cpfFromAuth = str(getCPFFromAuth(token))
+            if cpfFromAuth:
+                profile = Profile.objects.all().filter_client
+
+                return profile
+
+        pass
+
+
+class Filter_client(django_filters.FilterSet):
+    fullname = django_filters.CharFilter(LookupChoiceFilter=['icontains'])
+
+    class Meta:
+        model = Profile
+        fields = ['fullname']
+
