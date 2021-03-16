@@ -286,6 +286,12 @@ class Query(graphene.ObjectType):
                                 token=graphene.String(),
                                 )
 
+    get_advisors_portfolio = graphene.List(setType,
+                                           token=graphene.String(),
+                                           page=graphene.Int() 
+                                          )
+
+
     def resolve_get_profile(self, info, token=None, **kwargs):
         if token:
             cpf = str(getCPFFromAuth(token))
@@ -298,29 +304,17 @@ class Query(graphene.ObjectType):
             return profile
 
         pass
-
-class Query(graphene.ObjectType):
-    client_portfolio = graphene.List(setType,
-                                     token=graphene.String(),
-                                     page=graphene.Int(),
-                                     filter_client=graphene.List(Filter_client(),
-                                     ))  
-
-    def resolve_client_portfolio(self, info, page, token=None, *filter_client, **kwargs):
+    
+    def resolve_get_advisors_portfolio(self, info, page, token=None, **kwargs,):
         if token:
             cpfFromAuth = str(getCPFFromAuth(token))
-            if cpfFromAuth:
-                profile = Profile.objects.all().filter_client
+            advisor = FinancialAdvisors.objects.get(cpf__exatc=cpfFromAuth)
+            data = Profile.objects.get(FinancialAdvisors__exact=advisor)
+            total_profile = len(data)
 
-                return profile
+            return data, total_profile
 
         pass
 
 
-class Filter_client(django_filters.FilterSet):
-    fullname = django_filters.CharFilter(LookupChoiceFilter=['icontains'])
-
-    class Meta:
-        model = Profile
-        fields = ['fullname']
 
