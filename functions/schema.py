@@ -1,6 +1,7 @@
 import graphene
 
 from graphene_django import DjangoObjectType
+from graphql import GraphQLError
 
 from .models import *
 from django.db.models import Q
@@ -41,7 +42,7 @@ class setAdvisorsProfile(graphene.Mutation):
             return setAdvisorsProfile(advisorsProfile=advisorsProfile)
 
 
-class setType(DjangoObjectType):
+class setProfileType(DjangoObjectType):
     class Meta:
         model = Profile
         filter_fields = [
@@ -97,14 +98,20 @@ class setType(DjangoObjectType):
 
 
 class setProfile(graphene.Mutation):
-    profile = graphene.Field(setType)
+    profile = graphene.Field(setProfileType)
 
     class Arguments:
         token = graphene.String()
         profile_data = ProfileInput(required=True)
 
     def mutate(self, info, token, profile_data=None):
-        cpfFromAuth = str(getCPFFromAuth(token))
+
+        _cpf = str(getCPFFromAuth(token))
+        if not(_cpf):
+            raise GraphQLError('O token utilizado não é válido')
+
+        if profile_data.cpf:
+            _cpf = profile_data.cpf
 
         financial_advisor = []
         if profile_data.financial_advisor:
@@ -155,7 +162,8 @@ class setProfile(graphene.Mutation):
             profile_data['financial_advisor'] = _financial_advisor
 
         profile, created = Profile.objects.update_or_create(
-            cpf=cpfFromAuth, defaults={**profile_data})
+            cpf=_cpf, defaults={**profile_data})
+
         if created:
             profile.save()
 
@@ -294,7 +302,8 @@ class setAdvisorsPortfolioType(graphene.ObjectType):
 
     def resolve_portfolio(self, info):
         items_per_page = 10
-        offset = 0 * items_per_page #esse valor 0 tem que ser substituido pelo valor que vem na propriedade page da query
+        # esse valor 0 tem que ser substituido pelo valor que vem na propriedade page da query
+        offset = 0 * items_per_page
         limit = items_per_page + offset
         return self[offset:limit]
 
@@ -305,10 +314,9 @@ class setAdvisorsPortfolioType(graphene.ObjectType):
 
 
 class Query(graphene.ObjectType):
-    get_profile = graphene.List(
-        setType,
-        token=graphene.String(),
-    )
+    get_profile = graphene.List(setProfileType,
+                                token=graphene.String(),
+                                )
 
     def resolve_get_profile(self, info, token=None, **kwargs):
         if token:
