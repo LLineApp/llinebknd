@@ -61,6 +61,7 @@ class ChildrenInput(graphene.InputObjectType):
 class ProfileInput(graphene.InputObjectType):
     email = graphene.String(required=False)
     fullname = graphene.String(required=False)
+    cpf = graphene.String(required=False)
     birthdate = graphene.Date(required=False)
     preferred_contact = graphene.String(required=False)
     maritalStatus = graphene.String(required=False)
