@@ -1,6 +1,7 @@
 import graphene
 
 from graphene_django import DjangoObjectType
+from graphql import GraphQLError
 
 from .models import *
 from django.db.models import Q
@@ -39,7 +40,7 @@ class setAdvisorsProfile(graphene.Mutation):
             advisorsProfile.save()
             return setAdvisorsProfile(advisorsProfile=advisorsProfile)
 
-class setType(DjangoObjectType):
+class setProfileType(DjangoObjectType):
     class Meta:
         model = Profile
 
@@ -94,14 +95,20 @@ class setType(DjangoObjectType):
 
 
 class setProfile(graphene.Mutation):
-    profile = graphene.Field(setType)
+    profile = graphene.Field(setProfileType)
 
     class Arguments:
         token = graphene.String()
         profile_data = ProfileInput(required=True)
 
     def mutate(self, info, token, profile_data=None):
-        cpfFromAuth = str(getCPFFromAuth(token))
+
+        _cpf = str(getCPFFromAuth(token))
+        if not(_cpf):
+            raise GraphQLError('O token utilizado não é válido')
+
+        if profile_data.cpf:
+            _cpf = profile_data.cpf
 
         financial_advisor = []
         if profile_data.financial_advisor:
@@ -150,7 +157,8 @@ class setProfile(graphene.Mutation):
                 _financial_advisor.save()
             profile_data['financial_advisor'] = _financial_advisor
 
-        profile, created = Profile.objects.update_or_create(cpf=cpfFromAuth,
+
+        profile, created = Profile.objects.update_or_create(cpf=_cpf,
                                                             defaults={
                                                                 **profile_data}
                                                             )
@@ -279,7 +287,7 @@ class Mutation(graphene.ObjectType):
 
 
 class Query(graphene.ObjectType):
-    get_profile = graphene.List(setType,
+    get_profile = graphene.List(setProfileType,
                                 token=graphene.String(),
                                 )
 
