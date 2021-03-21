@@ -292,25 +292,54 @@ class Mutation(graphene.ObjectType):
     set_advisors_profile = setAdvisorsProfile.Field()
 
 
+items_per_page = 10
+
+
+def normalize_page(page):
+    page = page if page else 0
+    if page > 0:
+        return page - 1
+    else:
+        return 0
+
+
 class setPortfolioType(DjangoObjectType):
     class Meta:
         model = Profile
 
 
 class setAdvisorsPortfolioType(graphene.ObjectType):
+
     portfolio = graphene.List(setPortfolioType)
 
     def resolve_portfolio(self, info):
-        items_per_page = 10
-        # esse valor 0 tem que ser substituido pelo valor que vem na propriedade page da query
-        offset = 0 * items_per_page
+        data = self['data']
+
+        page = normalize_page(self['page'])
+
+        offset = page * items_per_page
         limit = items_per_page + offset
-        return self[offset:limit]
+        return data[offset:limit]
 
     total_count = graphene.Int()
 
-    def resolve_total_count(self, info, **kwargs):
-        return self.count()
+    def resolve_total_count(self, info):
+        return self['data'].count()
+
+    total_pages = graphene.Int()
+
+    def resolve_total_pages(self, info):
+        return self['data'].count() % items_per_page
+
+    current_page = graphene.Int()
+
+    def resolve_current_page(self, info):
+        return normalize_page(self['page']) + 1
+
+    items_per_page = graphene.Int()
+
+    def resolve_items_per_page(self, info):
+        return items_per_page
 
 
 class Query(graphene.ObjectType):
@@ -333,13 +362,12 @@ class Query(graphene.ObjectType):
                                             token=graphene.String(),
                                             page=graphene.Int())
 
-    def resolve_get_advisors_portfolio(self, info, page, token=None, **kwargs):
+    def resolve_get_advisors_portfolio(self, info, token, page=None, **kwargs):
         if token:
             cpfFromAuth = str(getCPFFromAuth(token))
-            print(cpfFromAuth)
             advisor = FinancialAdvisors.objects.get(cpf__exact=cpfFromAuth)
             filter = (Q(financial_advisor__exact=advisor))
             data = Profile.objects.all().filter(filter)
-            return data
+            return {'data': data, 'page': page}
 
         pass
