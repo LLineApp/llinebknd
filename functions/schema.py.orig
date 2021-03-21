@@ -41,7 +41,10 @@ class setAdvisorsProfile(graphene.Mutation):
             advisorsProfile.save()
             return setAdvisorsProfile(advisorsProfile=advisorsProfile)
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 719458fc5c4a20376ced3b08e1c81a0fe9ea4c6a
 class setProfileType(DjangoObjectType):
     class Meta:
         model = Profile
@@ -161,9 +164,16 @@ class setProfile(graphene.Mutation):
                 _financial_advisor.save()
             profile_data['financial_advisor'] = _financial_advisor
 
-        profile, created = Profile.objects.update_or_create(cpf=_cpf,
-                                                            defaults={**profile_data})
+<<<<<<< HEAD
+        profile, created = Profile.objects.update_or_create(
+            cpf=_cpf, defaults={**profile_data})
 
+=======
+        profile, created = Profile.objects.update_or_create(cpf=_cpf,
+                                                            defaults={
+                                                                **profile_data}
+                                                            )
+>>>>>>> 719458fc5c4a20376ced3b08e1c81a0fe9ea4c6a
         if created:
             profile.save()
 
