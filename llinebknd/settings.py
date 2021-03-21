@@ -12,6 +12,12 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 
 import os
 
+try:
+    import django_heroku
+except ImportError:
+    pass
+
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -125,8 +131,13 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+try:
+    django_heroku.settings(locals())
+except:
+    pass
+
 GRAPHENE = {
-    'SCHEMA':'llinebknd.schema.schema',
+    'SCHEMA': 'llinebknd.schema.schema',
 }
 
 AUTHENTICATION_BACKENDS = [
@@ -144,3 +155,6 @@ CORS_ORIGIN_WHITELIST = os.getenv(
 CORS_ORIGIN_REGEX_WHITELIST = [
     'http://localhost:3030',
 ]
+
+# Auth URL
+AUTH_URL = os.getenv('AUTH_URL', 'http://127.0.0.1:8001/graphql/')
