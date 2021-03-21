@@ -28,33 +28,37 @@ class setAdvisorsProfile(graphene.Mutation):
         company = graphene.String(required=True)
         token = graphene.String(required=True)
 
-    def mutate(self, info, cpf, fullname, register, company,token):
+    def mutate(self, info, cpf, fullname, register, company, token):
         cpfFromAuth = str(getCPFFromAuth(token))
-        
+
         if cpfFromAuth:
-            advisorsProfile = FinancialAdvisors(cpf=cpf,
-                                            fullname=fullname,
-                                            register=register,
-                                            company=company,  
+            advisorsProfile = FinancialAdvisors(
+                cpf=cpf,
+                fullname=fullname,
+                register=register,
+                company=company,
             )
             advisorsProfile.save()
             return setAdvisorsProfile(advisorsProfile=advisorsProfile)
 
+
 class setProfileType(DjangoObjectType):
     class Meta:
         model = Profile
+        filter_fields = [
+            'fullname',
+        ]
 
     phones = graphene.List(graphene.String)
 
     def resolve_phones(self, info):
-        return Phones.objects.filter(
-            profile__in=str(self.id)).values_list('phone', flat=True)
+        return Phones.objects.filter(profile__in=str(self.id)).values_list(
+            'phone', flat=True)
 
     children = graphene.List(ChildrenOutput)
 
     def resolve_children(self, info):
-        return Children.objects.filter(
-            profile__in=str(self.id)).values()
+        return Children.objects.filter(profile__in=str(self.id)).values()
 
     immovable_properties = graphene.List(ImmovablePropertiesOutput)
 
@@ -71,8 +75,7 @@ class setProfileType(DjangoObjectType):
     insurances = graphene.List(InsurancesOutput)
 
     def resolve_insurances(self, info):
-        return Insurances.objects.filter(
-            profile__in=str(self.id)).values()
+        return Insurances.objects.filter(profile__in=str(self.id)).values()
 
     investment_portfolios = graphene.List(InvestmentPortfoliosOutput)
 
@@ -149,110 +152,113 @@ class setProfile(graphene.Mutation):
                 "fixed_income_securities")
 
         if financial_advisor:
-            _financial_advisor, created = FinancialAdvisors.objects.get_or_create(fullname=financial_advisor['fullname'],
-                                                                                  register=financial_advisor['register'],
-                                                                                  company=financial_advisor['company'],
-                                                                                  )
+            _financial_advisor, created = FinancialAdvisors.objects.get_or_create(
+                fullname=financial_advisor['fullname'],
+                register=financial_advisor['register'],
+                company=financial_advisor['company'],
+            )
             if created:
                 _financial_advisor.save()
             profile_data['financial_advisor'] = _financial_advisor
 
-
         profile, created = Profile.objects.update_or_create(cpf=_cpf,
-                                                            defaults={
-                                                                **profile_data}
-                                                            )
+                                                            defaults={**profile_data})
+
         if created:
             profile.save()
 
         if phones:
             Phones.objects.filter(profile=profile).delete()
             for phone in phones:
-                phones = Phones(profile=profile,
-                                phone=phone,
-                                )
+                phones = Phones(
+                    profile=profile,
+                    phone=phone,
+                )
                 phones.save()
 
         if children:
             Children.objects.filter(profile=profile).delete()
             for child in children:
-                children = Children(profile=profile,
-                                    fullname=child['fullname'],
-                                    birthdate=child['birthdate'],
-                                    occupation_training=child['occupation_training'],
-                                    additional_info=child['additional_info'],
-                                    )
+                children = Children(
+                    profile=profile,
+                    fullname=child['fullname'],
+                    birthdate=child['birthdate'],
+                    occupation_training=child['occupation_training'],
+                    additional_info=child['additional_info'],
+                )
                 children.save()
 
         if immovable_properties:
             ImmovableProperties.objects.filter(profile=profile).delete()
             for immovable_property in immovable_properties:
-                immovable_properties = ImmovableProperties(profile=profile,
-                                                           description=immovable_property['description'],
-                                                           value=immovable_property['value'],
-                                                           rented=immovable_property['rented'],
-                                                           funded=immovable_property['funded'],
-                                                           insurance_value=immovable_property['insurance_value'],
-                                                           insurance_company=immovable_property['insurance_company'],
-                                                           )
+                immovable_properties = ImmovableProperties(
+                    profile=profile,
+                    description=immovable_property['description'],
+                    value=immovable_property['value'],
+                    rented=immovable_property['rented'],
+                    funded=immovable_property['funded'],
+                    insurance_value=immovable_property['insurance_value'],
+                    insurance_company=immovable_property['insurance_company'],
+                )
                 immovable_properties.save()
 
         if investor_experiences:
             InvestorExperiences.objects.filter(profile=profile).delete()
             for investor_experience in investor_experiences:
-                investor_experiences = InvestorExperiences(profile=profile,
-                                                           kind=investor_experience['kind'],
-                                                           value=investor_experience['value'],
-                                                           )
+                investor_experiences = InvestorExperiences(
+                    profile=profile,
+                    kind=investor_experience['kind'],
+                    value=investor_experience['value'],
+                )
                 investor_experiences.save()
 
         if insurances:
             Insurances.objects.filter(profile=profile).delete()
             for insurance in insurances:
-                insurances = Insurances(profile=profile,
-                                        kind=insurance['kind'],
-                                        value=insurance['value'],
-                                        monthly_fee=insurance['monthly_fee'],
-                                        coverage=insurance['coverage'],
-                                        company=insurance['company'],
-
-
-                                        )
+                insurances = Insurances(
+                    profile=profile,
+                    kind=insurance['kind'],
+                    value=insurance['value'],
+                    monthly_fee=insurance['monthly_fee'],
+                    coverage=insurance['coverage'],
+                    company=insurance['company'],
+                )
                 insurances.save()
 
         if investment_portfolios:
             InvestmentPortfolios.objects.filter(profile=profile).delete()
             for investment_portfolio in investment_portfolios:
-                investment_portfolios = InvestmentPortfolios(profile=profile,
-                                                             kind=investment_portfolio['kind'],
-                                                             value=investment_portfolio['value'],
-                                                             tx=investment_portfolio['tx'],
-                                                             )
+                investment_portfolios = InvestmentPortfolios(
+                    profile=profile,
+                    kind=investment_portfolio['kind'],
+                    value=investment_portfolio['value'],
+                    tx=investment_portfolio['tx'],
+                )
                 investment_portfolios.save()
 
         if personal_private_securities:
             PersonalPrivateSecurities.objects.filter(profile=profile).delete()
             for personal_private_security in personal_private_securities:
-                personal_private_securities = PersonalPrivateSecurities(profile=profile,
-                                                                        bank=personal_private_security['bank'],
-                                                                        enterprise=personal_private_security[
-                                                                            'enterprise'],
-                                                                        cooperative=personal_private_security[
-                                                                            'cooperative'],
-                                                                        survival=personal_private_security['survival'],
-                                                                        table=personal_private_security['table'],
-                                                                        balance=personal_private_security['balance'],
-                                                                        )
+                personal_private_securities = PersonalPrivateSecurities(
+                    profile=profile,
+                    bank=personal_private_security['bank'],
+                    enterprise=personal_private_security['enterprise'],
+                    cooperative=personal_private_security['cooperative'],
+                    survival=personal_private_security['survival'],
+                    table=personal_private_security['table'],
+                    balance=personal_private_security['balance'],
+                )
                 personal_private_securities.save()
 
         if fixed_income_securities:
             FixedIncomeSecurities.objects.filter(profile=profile).delete()
             for fixed_income_security in fixed_income_securities:
-                fixed_income_securities = FixedIncomeSecurities(profile=profile,
-                                                                kind=fixed_income_security['kind'],
-                                                                value=fixed_income_security['value'],
-                                                                tx=fixed_income_security['tx'],
-                                                                )
+                fixed_income_securities = FixedIncomeSecurities(
+                    profile=profile,
+                    kind=fixed_income_security['kind'],
+                    value=fixed_income_security['value'],
+                    tx=fixed_income_security['tx'],
+                )
                 fixed_income_securities.save()
 
 
@@ -275,15 +281,65 @@ class setAdvisorsLink(graphene.Mutation):
                 if link:
                     advisorsLinkData = advisorsLink.getAdvisorByLink(link)
                 else:
-                    advisorsLinkData =  advisorsLink.createAdvisorsLink(cpf)
+                    advisorsLinkData = advisorsLink.createAdvisorsLink(cpf)
 
-        return setAdvisorsLink(advisorsLinkData = advisorsLinkData)
-    
+        return setAdvisorsLink(advisorsLinkData=advisorsLinkData)
+
 
 class Mutation(graphene.ObjectType):
     set_profile = setProfile.Field()
     set_advisors_link = setAdvisorsLink.Field()
     set_advisors_profile = setAdvisorsProfile.Field()
+
+
+items_per_page = 10
+
+
+def normalize_page(page):
+    page = page if page else 0
+    if page > 0:
+        return page - 1
+    else:
+        return 0
+
+
+class setPortfolioType(DjangoObjectType):
+    class Meta:
+        model = Profile
+
+
+class setAdvisorsPortfolioType(graphene.ObjectType):
+
+    portfolio = graphene.List(setPortfolioType)
+
+    def resolve_portfolio(self, info):
+        data = self['data']
+
+        page = normalize_page(self['page'])
+
+        offset = page * items_per_page
+        limit = items_per_page + offset
+        return data[offset:limit]
+
+    total_count = graphene.Int()
+
+    def resolve_total_count(self, info):
+        return self['data'].count()
+
+    total_pages = graphene.Int()
+
+    def resolve_total_pages(self, info):
+        return self['data'].count() % items_per_page
+
+    current_page = graphene.Int()
+
+    def resolve_current_page(self, info):
+        return normalize_page(self['page']) + 1
+
+    items_per_page = graphene.Int()
+
+    def resolve_items_per_page(self, info):
+        return items_per_page
 
 
 class Query(graphene.ObjectType):
@@ -294,12 +350,24 @@ class Query(graphene.ObjectType):
     def resolve_get_profile(self, info, token=None, **kwargs):
         if token:
             cpf = str(getCPFFromAuth(token))
-            filter = (
-                Q(cpf__exact=cpf)
-            )
+            filter = (Q(cpf__exact=cpf))
 
             profile = Profile.objects.all().filter(filter)
 
             return profile
+
+        pass
+
+    get_advisors_portfolio = graphene.Field(setAdvisorsPortfolioType,
+                                            token=graphene.String(),
+                                            page=graphene.Int())
+
+    def resolve_get_advisors_portfolio(self, info, token, page=None, **kwargs):
+        if token:
+            cpfFromAuth = str(getCPFFromAuth(token))
+            advisor = FinancialAdvisors.objects.get(cpf__exact=cpfFromAuth)
+            filter = (Q(financial_advisor__exact=advisor))
+            data = Profile.objects.all().filter(filter)
+            return {'data': data, 'page': page}
 
         pass
