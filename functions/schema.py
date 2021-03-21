@@ -371,3 +371,23 @@ class Query(graphene.ObjectType):
             return {'data': data, 'page': page}
 
         pass
+    
+
+    get_prospect_profile = graphene.List(setAdvisorsPortfolioType,
+                                         token=graphene.String(),
+                                         page=graphene.Int(),)
+
+    def resolve_get_prospect_profile(self, info, token, page=None, **kwargs):
+        if token:
+            cpfFromAuth = str(getCPFFromAuth(token))
+            if cpfFromAuth:
+                filter = (Q(acceptFinancialAdvisorContact__exact=True)|
+                          Q(financialAdvisor__exact=Null))
+                data = Profile.objects.all().filter(filter)
+                return {'data' : data, 'page': page}          
+        pass
+
+
+
+
+
