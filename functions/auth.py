@@ -1,14 +1,10 @@
 from gql import Client, gql
 from gql.transport.requests import RequestsHTTPTransport
 import json
-from llinebknd.settings import DEBUG
+from llinebknd.settings import AUTH_URL
 
-if DEBUG:
-    transport = RequestsHTTPTransport(
-        url="http://127.0.0.1:8001/graphql/")
-else:
-    transport = RequestsHTTPTransport(
-        url="https://lline-auth.herokuapp.com/graphql/")
+transport = RequestsHTTPTransport(
+    url=AUTH_URL)
 
 
 client = Client(transport=transport, fetch_schema_from_transport=True)
