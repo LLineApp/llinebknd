@@ -4,7 +4,7 @@ from graphene_django import DjangoObjectType
 from graphql import GraphQLError
 
 from .models import *
-from django.db.models import Q
+from django.db.models import Q, TextField, CharField
 
 from .auth import getCPFFromAuth
 from .advisor import advisorsLink
@@ -303,6 +303,17 @@ def normalize_page(page):
         return 0
 
 
+def searchProfileFor(containing):
+    fields = [f for f in Profile._meta.fields if isinstance(
+        f, (TextField, CharField))]
+    queries = [Q(**{f.name + "__icontains": containing}) for f in fields]
+    qs = Q()
+    for query in queries:
+        qs = qs | query
+
+    return qs
+
+
 class setPortfolioType(DjangoObjectType):
     class Meta:
         model = Profile
@@ -360,29 +371,38 @@ class Query(graphene.ObjectType):
 
     get_advisors_portfolio = graphene.Field(setAdvisorsPortfolioType,
                                             token=graphene.String(),
-                                            page=graphene.Int())
+                                            page=graphene.Int(),
+                                            containing=graphene.String())
 
-    def resolve_get_advisors_portfolio(self, info, token, page=None, **kwargs):
+    def resolve_get_advisors_portfolio(self, info, token, page, containing=None, **kwargs):
         if token:
             cpfFromAuth = str(getCPFFromAuth(token))
             advisor = FinancialAdvisors.objects.get(cpf__exact=cpfFromAuth)
             filter = (Q(financial_advisor__exact=advisor))
+
+            if containing:
+                filter = filter & searchProfileFor(containing)
+
             data = Profile.objects.all().filter(filter)
             return {'data': data, 'page': page}
 
         pass
-    
 
     get_prospect_profile = graphene.Field(setAdvisorsPortfolioType,
-                                         token=graphene.String(),
-                                         page=graphene.Int())
+                                          token=graphene.String(),
+                                          page=graphene.Int(),
+                                          containing=graphene.String())
 
-    def resolve_get_prospect_profile(self, info, token, page=None, **kwargs):
+    def resolve_get_prospect_profile(self, info, token, page, containing=None, **kwargs):
         if token:
             cpfFromAuth = str(getCPFFromAuth(token))
             if cpfFromAuth:
-                filter = (Q(accept_financial_advisor_contact__exact=True)&
+                filter = (Q(accept_financial_advisor_contact__exact=True) &
                           Q(financial_advisor__isnull=True))
+
+                if containing:
+                    filter = filter & searchProfileFor(containing)
+
                 data = Profile.objects.all().filter(filter)
-                return {'data' : data, 'page': page}          
+                return {'data': data, 'page': page}
         pass
