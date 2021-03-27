@@ -96,6 +96,11 @@ class setProfileType(DjangoObjectType):
         return FixedIncomeSecurities.objects.filter(
             profile__in=str(self.id)).values()
 
+    is_advisor = graphene.Boolean()
+
+    def resolve_is_advisor(self, info):
+        return (FinancialAdvisors.objects.filter(cpf__exact=self.cpf).count() != 0)
+
 
 class setProfile(graphene.Mutation):
     profile = graphene.Field(setProfileType)
