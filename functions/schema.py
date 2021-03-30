@@ -52,49 +52,49 @@ class setProfileType(DjangoObjectType):
     phones = graphene.List(graphene.String)
 
     def resolve_phones(self, info):
-        return Phones.objects.filter(profile__in=str(self.id)).values_list(
+        return Phones.objects.filter(profile__exact=str(self.id)).values_list(
             'phone', flat=True)
 
     children = graphene.List(ChildrenOutput)
 
     def resolve_children(self, info):
-        return Children.objects.filter(profile__in=str(self.id)).values()
+        return Children.objects.filter(profile__exact=str(self.id)).values()
 
     immovable_properties = graphene.List(ImmovablePropertiesOutput)
 
     def resolve_immovable_properties(self, info):
         return ImmovableProperties.objects.filter(
-            profile__in=str(self.id)).values()
+            profile__exact=str(self.id)).values()
 
     investor_experiences = graphene.List(InvestorExperiencesOutput)
 
     def resolve_investor_experiences(self, info):
         return InvestorExperiences.objects.filter(
-            profile__in=str(self.id)).values()
+            profile__exact=str(self.id)).values()
 
     insurances = graphene.List(InsurancesOutput)
 
     def resolve_insurances(self, info):
-        return Insurances.objects.filter(profile__in=str(self.id)).values()
+        return Insurances.objects.filter(profile__exact=str(self.id)).values()
 
     investment_portfolios = graphene.List(InvestmentPortfoliosOutput)
 
     def resolve_investment_portfolios(self, info):
         return InvestmentPortfolios.objects.filter(
-            profile__in=str(self.id)).values()
+            profile__exact=str(self.id)).values()
 
     personal_private_securities = graphene.List(
         PersonalPrivateSecuritiesOutput)
 
     def resolve_personal_private_securities(self, info):
         return PersonalPrivateSecurities.objects.filter(
-            profile__in=str(self.id)).values()
+            profile__exact=str(self.id)).values()
 
     fixed_income_securities = graphene.List(FixedIncomeSecuritiesOutput)
 
     def resolve_fixed_income_securities(self, info):
         return FixedIncomeSecurities.objects.filter(
-            profile__in=str(self.id)).values()
+            profile__exact=str(self.id)).values()
 
     is_advisor = graphene.Boolean()
 
