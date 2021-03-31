@@ -470,9 +470,11 @@ class Query(graphene.ObjectType):
             
             if not cpfFromAuth:
                 pass
+            
+            data = FinancialAdvisors.objects.all()
             if containing:
-                    filter = searchAdvisorsFor(containing)
-
-            data = FinancialAdvisors.objects.all().filter(filter)
+                filter = searchAdvisorsFor(containing)
+                data = data.filter(filter)
             return {'data': data, 'page': page}
+        
         pass    
