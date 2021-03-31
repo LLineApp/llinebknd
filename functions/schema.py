@@ -238,6 +238,7 @@ class setProfile(graphene.Mutation):
                     kind=investment_portfolio['kind'],
                     value=investment_portfolio['value'],
                     tx=investment_portfolio['tx'],
+                    tx_type=investment_portfolio['tx_type']
                 )
                 investment_portfolios.save()
 
