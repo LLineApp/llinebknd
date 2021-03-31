@@ -459,7 +459,7 @@ class Query(graphene.ObjectType):
                 return {'data': data, 'page': page}
         pass
     
-    get_advisors = graphene.Field(getAdvisorsType,
+    get_advisors = graphene.Field(getFinancialAdvisorsType,
                                   token=graphene.String(),
                                   page=graphene.Int(),
                                   containing=graphene.String())
