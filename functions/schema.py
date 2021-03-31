@@ -319,6 +319,15 @@ def searchProfileFor(containing):
 
     return qs
 
+def searchAdvisorsFor(containing):
+    fields = [f for f in FinancialAdvisors._meta.fields if isinstance(
+        f, (TextField, CharField))]
+    queries = [Q(**{f.name + "__icontains": containing}) for f in fields]
+    qs = Q()
+    for query in queries:
+        qs = qs | query
+
+    return qs
 
 class setPortfolioType(DjangoObjectType):
     class Meta:
@@ -358,6 +367,43 @@ class setAdvisorsPortfolioType(graphene.ObjectType):
     def resolve_items_per_page(self, info):
         return items_per_page
 
+class getAdvisorsType(DjangoObjectType):
+    class Meta:
+        model = FinancialAdvisors
+
+
+class getFinancialAdvisorsType(graphene.ObjectType):
+
+    advisors_list = graphene.List(getAdvisorsType)
+
+    def resolve_advisors_list(self, info):
+        data = self['data']
+
+        page = normalize_page(self['page'])
+
+        offset = page * items_per_page
+        limit = items_per_page + offset
+        return data[offset:limit]
+
+    total_count = graphene.Int()
+
+    def resolve_total_count(self, info):
+        return self['data'].count()
+
+    total_pages = graphene.Int()
+
+    def resolve_total_pages(self, info):
+        return self['data'].count() % items_per_page
+
+    current_page = graphene.Int()
+
+    def resolve_current_page(self, info):
+        return normalize_page(self['page']) + 1
+
+    items_per_page = graphene.Int()
+
+    def resolve_items_per_page(self, info):
+        return items_per_page
 
 class Query(graphene.ObjectType):
     get_profile = graphene.List(setProfileType,
@@ -402,7 +448,7 @@ class Query(graphene.ObjectType):
     def resolve_get_prospect_profile(self, info, token, page, containing=None, **kwargs):
         if token:
             cpfFromAuth = str(getCPFFromAuth(token))
-            if cpfFromAuth:
+            if  cpfFromAuth:
                 filter = (Q(accept_financial_advisor_contact__exact=True) &
                           Q(financial_advisor__isnull=True))
 
@@ -412,3 +458,23 @@ class Query(graphene.ObjectType):
                 data = Profile.objects.all().filter(filter)
                 return {'data': data, 'page': page}
         pass
+    
+    get_advisors = graphene.Field(getFinancialAdvisorsType,
+                                  token=graphene.String(),
+                                  page=graphene.Int(),
+                                  containing=graphene.String())
+
+    def resolve_get_advisors(self, info , token, page, containing=None, **kwargs):
+        if token:
+            cpfFromAuth = str(getCPFFromAuth(token))
+            
+            if not cpfFromAuth:
+                pass
+            
+            data = FinancialAdvisors.objects.all()
+            if containing:
+                filter = searchAdvisorsFor(containing)
+                data = data.filter(filter)
+            return {'data': data, 'page': page}
+        
+        pass    
