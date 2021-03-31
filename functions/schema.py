@@ -372,9 +372,9 @@ class getAdvisorsType(DjangoObjectType):
         model = FinancialAdvisors
 
 
-class getAdvisorsPortfolioType(graphene.ObjectType):
+class getFinancialAdvisorsType(graphene.ObjectType):
 
-    portfolio = graphene.List(getAdvisorsType)
+    advisors_list = graphene.List(getAdvisorsType)
 
     def resolve_portfolio(self, info):
         data = self['data']
@@ -448,7 +448,7 @@ class Query(graphene.ObjectType):
     def resolve_get_prospect_profile(self, info, token, page, containing=None, **kwargs):
         if token:
             cpfFromAuth = str(getCPFFromAuth(token))
-            if cpfFromAuth:
+            if  cpfFromAuth:
                 filter = (Q(accept_financial_advisor_contact__exact=True) &
                           Q(financial_advisor__isnull=True))
 
@@ -459,7 +459,7 @@ class Query(graphene.ObjectType):
                 return {'data': data, 'page': page}
         pass
     
-    get_advisors = graphene.Field(getAdvisorsPortfolioType,
+    get_advisors = graphene.Field(getAdvisorsType,
                                   token=graphene.String(),
                                   page=graphene.Int(),
                                   containing=graphene.String())
@@ -468,6 +468,8 @@ class Query(graphene.ObjectType):
         if token:
             cpfFromAuth = str(getCPFFromAuth(token))
             
+            if not cpfFromAuth:
+                pass
             if containing:
                     filter = searchAdvisorsFor(containing)
 
