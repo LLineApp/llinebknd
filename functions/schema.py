@@ -376,7 +376,7 @@ class getFinancialAdvisorsType(graphene.ObjectType):
 
     advisors_list = graphene.List(getAdvisorsType)
 
-    def resolve_portfolio(self, info):
+    def resolve_advisors_list(self, info):
         data = self['data']
 
         page = normalize_page(self['page'])
