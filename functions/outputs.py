@@ -29,6 +29,7 @@ class InvestmentPortfoliosOutput(graphene.ObjectType):
     kind = graphene.String(required=False)
     value = graphene.Float(required=False)
     tx = graphene.Float(required=False)
+    tx_type = graphene.String(required=False)
 
 
 class PersonalPrivateSecuritiesOutput(graphene.ObjectType):

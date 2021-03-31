@@ -101,6 +101,7 @@ class InvestmentPortfolios(models.Model):
     kind = models.TextField(blank=True, null=True)
     value = models.FloatField(blank=True, null=True)
     tx = models.FloatField(blank=True, null=True)
+    tx_type = models.TextField(blank=True, null=True)
 
 
 class PersonalPrivateSecurities(models.Model):
