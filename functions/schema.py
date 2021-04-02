@@ -384,8 +384,10 @@ class getFinancialAdvisorsType(graphene.ObjectType):
     def resolve_advisors_list(self, info):
         data = self['data']
 
-        page = normalize_page(self['page'])
+        if self['page'] == -1:
+            return data
 
+        page = normalize_page(self['page'])
         offset = page * items_per_page
         limit = items_per_page + offset
         return data[offset:limit]
@@ -403,6 +405,8 @@ class getFinancialAdvisorsType(graphene.ObjectType):
     current_page = graphene.Int()
 
     def resolve_current_page(self, info):
+        if self['page'] == -1:
+            return -1
         return normalize_page(self['page']) + 1
 
     items_per_page = graphene.Int()
@@ -467,7 +471,7 @@ class Query(graphene.ObjectType):
 
     get_advisors = graphene.Field(getFinancialAdvisorsType,
                                   token=graphene.String(),
-                                  page=graphene.Int(),
+                                  page=graphene.Int(required=False),
                                   containing=graphene.String())
 
     def resolve_get_advisors(self, info, token, page, containing=None, **kwargs):
