@@ -1,12 +1,17 @@
 from django.conf import settings
 from django.db import models
 
+class ProfileAdvisors(models.Model):
+    profile = models.IntegerField(blank=True, null=False)
+    advisors = models.IntegerField(blank=True, null=False)
+
 
 class FinancialAdvisors(models.Model):
     fullname = models.TextField(blank=True, null=True)
     register = models.TextField(blank=True, null=True)
     company = models.TextField(blank=True, null=True)
     cpf = models.TextField(blank=True, null=True)
+    
 
 
 class Profile(models.Model):
@@ -55,7 +60,8 @@ class Profile(models.Model):
         FinancialAdvisors, null=True, on_delete=models.SET_NULL)
     accept_financial_advisor_contact = models.NullBooleanField(
         blank=True, null=True)
-    page = models.IntegerField(blank=True, null=True)    
+    page = models.IntegerField(blank=True, null=True)
+    profile_advisors = models.ForeignKey(ProfileAdvisors, null=False, on_delete=models.CASCADE)    
 
 
 class ImmovableProperties(models.Model):
@@ -124,3 +130,4 @@ class AdvisorsLink(models.Model):
     advisor = models.ForeignKey(FinancialAdvisors, null=False, on_delete=models.CASCADE)
     created_at = models.DateField()
     link = models.TextField()
+

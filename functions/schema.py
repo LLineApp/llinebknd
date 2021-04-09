@@ -103,6 +103,11 @@ class setProfileType(DjangoObjectType):
     def resolve_is_advisor(self, info):
         return (FinancialAdvisors.objects.filter(cpf__exact=self.cpf).count() != 0)
 
+    profile_advisors =graphene.List(ProfileAdvisorsOutput)
+
+    def resolve_profile_advisors(self, info):
+        return ProfileAdvisors.objects.filter(
+            profile__exact=str(self.id)).values()
 
 class setProfile(graphene.Mutation):
     profile = graphene.Field(setProfileType)
@@ -158,6 +163,11 @@ class setProfile(graphene.Mutation):
             fixed_income_securities = profile_data.pop(
                 "fixed_income_securities")
 
+        profile_advisors = []
+        if profile_data.profile_advisors:
+            profile_advisors = profile_data.pop(
+                "profile_advisors")
+        
         if financial_advisor:
             _financial_advisor, created = FinancialAdvisors.objects.get_or_create(
                 fullname=financial_advisor['fullname'],
@@ -270,6 +280,14 @@ class setProfile(graphene.Mutation):
                 fixed_income_securities.save()
 
 
+        if profile_advisors:
+            ProfileAdvisors.objects.filter(profile=Profile).delete()
+            for profile_advisors in profile_advisors:
+                profile_advisors = ProfileAdvisors(
+                    profile=profile,
+                    advisors=advisors['advisors'],   
+                )
+            profile_advisors.save()
 class setAdvisorsLinkData(DjangoObjectType):
     class Meta:
         model = AdvisorsLink
