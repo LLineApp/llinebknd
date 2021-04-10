@@ -1,17 +1,12 @@
 from django.conf import settings
 from django.db import models
 
-class ProfileAdvisors(models.Model):
-    profile = models.IntegerField(blank=True, null=False)
-    advisors = models.IntegerField(blank=True, null=False)
-
 
 class FinancialAdvisors(models.Model):
     fullname = models.TextField(blank=True, null=True)
     register = models.TextField(blank=True, null=True)
     company = models.TextField(blank=True, null=True)
     cpf = models.TextField(blank=True, null=True)
-    
 
 
 class Profile(models.Model):
@@ -24,9 +19,11 @@ class Profile(models.Model):
     maritalHowManyYears = models.IntegerField(blank=True, null=True)
     spouseName = models.TextField(blank=True, null=True)
     spouseOccupation = models.TextField(blank=True, null=True)
-    parentsAreThemSupportedByYou = models.NullBooleanField(blank=True, null=True)
+    parentsAreThemSupportedByYou = models.NullBooleanField(
+        blank=True, null=True)
     parentsHowMuchYouSuportThem = models.FloatField(blank=True, null=True)
-    parentsIsThereAPossibilityOfInheritance = models.NullBooleanField(blank=True, null=True)
+    parentsIsThereAPossibilityOfInheritance = models.NullBooleanField(
+        blank=True, null=True)
     parentsOfWhom = models.TextField(blank=True, null=True)
     parentsWhatIsTheEstimatedValue = models.FloatField(blank=True, null=True)
     occupation = models.TextField(blank=True, null=True)
@@ -126,8 +123,26 @@ class FixedIncomeSecurities(models.Model):
     value = models.FloatField(blank=True, null=True)
     tx = models.FloatField(blank=True, null=True)
 
+
 class AdvisorsLink(models.Model):
-    advisor = models.ForeignKey(FinancialAdvisors, null=False, on_delete=models.CASCADE)
+    advisor = models.ForeignKey(
+        FinancialAdvisors, null=False, on_delete=models.CASCADE)
     created_at = models.DateField()
     link = models.TextField()
 
+
+class ProfileAdvisors(models.Model):
+    profile = models.ForeignKey(
+        Profile, null=False, on_delete=models.CASCADE)
+    advisor = models.ForeignKey(
+        FinancialAdvisors, null=False, on_delete=models.CASCADE)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['profile'], name='profile_idx'),
+            models.Index(fields=['advisor'], name='advisor_idx'),
+        ]
+        constraints = [
+            models.UniqueConstraint(
+                fields=['profile', 'advisor'], name='profile_advisor_uk')
+        ]
