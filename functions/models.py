@@ -58,7 +58,6 @@ class Profile(models.Model):
     accept_financial_advisor_contact = models.NullBooleanField(
         blank=True, null=True)
     page = models.IntegerField(blank=True, null=True)
-    profile_advisors = models.ForeignKey(ProfileAdvisors, null=False, on_delete=models.CASCADE)    
 
 
 class ImmovableProperties(models.Model):
