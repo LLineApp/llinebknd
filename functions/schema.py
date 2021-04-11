@@ -418,11 +418,13 @@ class getFinancialAdvisorsType(graphene.ObjectType):
 class Query(graphene.ObjectType):
     get_profile = graphene.List(setProfileType,
                                 token=graphene.String(),
+                                cpf=graphene.String(),
                                 )
 
-    def resolve_get_profile(self, info, token=None, **kwargs):
+    def resolve_get_profile(self, info, token, cpf=None, **kwargs):
         if token:
-            cpf = str(getCPFFromAuth(token))
+            if(cpf == "" or cpf == None):
+                cpf = str(getCPFFromAuth(token))
             filter = (Q(cpf__exact=cpf))
 
             profile = Profile.objects.all().filter(filter)
