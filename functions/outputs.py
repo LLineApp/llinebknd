@@ -2,6 +2,10 @@ import graphene
 from graphene_django import DjangoObjectType
 from .models import *
 
+class ProfileAdvisorsOutput(graphene.ObjectType):
+    profile = graphene.Int(required=True)
+    advisors = graphene.Int(required=True)
+
 
 class InvestorExperiencesOutput(graphene.ObjectType):
     kind = graphene.String(required=False)
