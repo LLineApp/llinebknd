@@ -194,15 +194,6 @@ class setProfile(graphene.Mutation):
                 )
                 phones.save()
 
-        if financial_advisor:
-            _financial_advisor, created = ProfileAdvisors.objects.get_or_create(
-                profile_id=profile['id'],
-                advisor_id=financial_advisor
-            )
-            if created:
-                _financial_advisor.save()
-            profile_data['financial_advisor'] = _financial_advisor
-
         if advisors:
             for advisor in advisors:
                 if FinancialAdvisors.objects.filter(id=advisor).exists():

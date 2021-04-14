@@ -121,7 +121,7 @@ class ProfileInput(graphene.InputObjectType):
         PersonalPrivateSecuritiesInput, required=False)
     fixed_income_securities = graphene.List(
         FixedIncomeSecuritiesInput, required=False)
-    financial_advisor = graphene.Field(ProfileAdvisorsInput, required=False)
+    financial_advisor = graphene.Field(FinancialAdvisorsInput, required=False)
     advisors = graphene.List(graphene.Int, required=False)
     accept_financial_advisor_contact = graphene.Boolean(required=False)
     page = graphene.Int(required=False)
