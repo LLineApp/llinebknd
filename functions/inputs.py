@@ -11,6 +11,11 @@ class FinancialAdvisorsInput(graphene.InputObjectType):
     company = graphene.String(required=False)
 
 
+class ProfileAdvisorsInput(graphene.InputObjectType):
+    profile_id = graphene.Int(required=True)
+    advisor_id = graphene.Int(required=True)
+
+
 class FixedIncomeSecuritiesInput(graphene.InputObjectType):
     kind = graphene.String(required=False)
     value = graphene.Float(required=False)
@@ -116,6 +121,7 @@ class ProfileInput(graphene.InputObjectType):
         PersonalPrivateSecuritiesInput, required=False)
     fixed_income_securities = graphene.List(
         FixedIncomeSecuritiesInput, required=False)
-    financial_advisor = graphene.Field(FinancialAdvisorsInput, required=False)
+    financial_advisor = graphene.Field(ProfileAdvisorsInput, required=False)
+    advisors = graphene.List(graphene.Int, required=False)
     accept_financial_advisor_contact = graphene.Boolean(required=False)
     page = graphene.Int(required=False)
