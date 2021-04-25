@@ -120,13 +120,6 @@ class setProfile(graphene.Mutation):
 
     def mutate(self, info, token, profile_data=None):
 
-        _cpf = str(getCPFFromAuth(token))
-        if not(_cpf):
-            raise GraphQLError('O token utilizado não é válido')
-
-        if profile_data.cpf:
-            _cpf = profile_data.cpf
-
         financial_advisor = []
         if profile_data.financial_advisor:
             financial_advisor = profile_data.pop("financial_advisor")
@@ -179,11 +172,16 @@ class setProfile(graphene.Mutation):
                 _financial_advisor.save()
             profile_data['financial_advisor'] = _financial_advisor
 
-        profile, created = Profile.objects.update_or_create(cpf=_cpf,
-                                                            defaults={**profile_data})
-
-        if created:
+        if profile_data.cpf:
+            profile, created = Profile.objects.update_or_create(cpf=profile_data.cpf,
+                                                                defaults={**profile_data})
+            if created:
+                profile.save()
+        else:                                                        
+            profile = Profile.objects.create(**profile_data)
+            profile.cpf = profile.id
             profile.save()
+            
 
         if phones:
             Phones.objects.filter(profile=profile).delete()
@@ -290,6 +288,7 @@ class setProfile(graphene.Mutation):
                     tx=fixed_income_security['tx'],
                 )
                 fixed_income_securities.save()
+        return setProfile(profile=profile)
 
 
 class setAdvisorsLinkData(DjangoObjectType):
