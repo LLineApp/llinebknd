@@ -177,11 +177,10 @@ class setProfile(graphene.Mutation):
                                                                 defaults={**profile_data})
             if created:
                 profile.save()
-        else:                                                        
+        else:
             profile = Profile.objects.create(**profile_data)
             profile.cpf = profile.id
             profile.save()
-            
 
         if phones:
             Phones.objects.filter(profile=profile).delete()
@@ -393,6 +392,19 @@ class setAdvisorsPortfolioType(graphene.ObjectType):
         return items_per_page
 
 
+class setAnyProfileType(graphene.ObjectType):
+
+    profiles = graphene.List(setPortfolioType)
+
+    def resolve_profiles(self, info):
+        return self['data']
+
+    total_count = graphene.Int()
+
+    def resolve_total_count(self, info):
+        return self['data'].count()
+
+
 class getAdvisorsType(DjangoObjectType):
     class Meta:
         model = FinancialAdvisors
@@ -490,6 +502,21 @@ class Query(graphene.ObjectType):
 
                 data = Profile.objects.all().filter(filter)
                 return {'data': data, 'page': page}
+        pass
+
+    get_any_profile = graphene.Field(setAnyProfileType,
+                                     token=graphene.String(),
+                                     containing=graphene.String(required=True))
+
+    def resolve_get_any_profile(self, info, token, containing=None, **kwargs):
+        if token:
+            cpfFromAuth = str(getCPFFromAuth(token))
+            if cpfFromAuth:
+                if containing:
+                    data = Profile.objects.all().filter(searchProfileFor(containing))
+                    return {'data': data}
+                else:
+                    raise GraphQLError('You must set a filter')
         pass
 
     get_advisors = graphene.Field(getFinancialAdvisorsType,
