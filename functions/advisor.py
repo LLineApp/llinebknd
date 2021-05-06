@@ -9,7 +9,7 @@ class advisorsLink:
         advisor = FinancialAdvisors.objects.get(cpf__exact=self)
         if advisor:
             now = datetime.datetime.now()
-            link = str(now).encode() + advisor.register.encode()
+            link = str(now).encode() + advisor.cpf.encode()
             link = hashlib.md5(link).digest()
             link = base64.urlsafe_b64encode(
                 link).decode('ascii').replace("=", "")
