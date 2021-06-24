@@ -26,13 +26,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '%#gb6$twzmxup9ah$4k#(u11-@$0sfyd1c-t==e72v=wl35^pp'
+SECRET_KEY = os.getenv(
+    'SECRET_KEY', '%#gb6$twzmxup9ah$4k#(u11-@$0sfyd1c-t==e72v=wl35^pp')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'TRUE') == 'TRUE'
 
-ALLOWED_HOSTS = ['*']
-
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split(',')
 
 # Application definition
 
@@ -47,8 +47,11 @@ INSTALLED_APPS = [
     'graphene_django',
     'corsheaders',
     'functions',
+    'users',
     'django_filters',
 ]
+
+AUTH_USER_MODEL = 'users.CustomUser'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -59,6 +62,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'graphql_jwt.middleware.JSONWebTokenMiddleware',
 ]
 
 ROOT_URLCONF = 'llinebknd.urls'
@@ -155,6 +160,3 @@ CORS_ORIGIN_WHITELIST = os.getenv(
 CORS_ORIGIN_REGEX_WHITELIST = [
     'http://localhost:3030',
 ]
-
-# Auth URL
-AUTH_URL = os.getenv('AUTH_URL', 'http://127.0.0.1:8001/graphql/')
