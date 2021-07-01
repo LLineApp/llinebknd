@@ -551,15 +551,20 @@ class Query(graphene.ObjectType):
 
         pass
     
-    get_advisors_portfolio_from_advisor = graphene.Field(getPortfolioFromAdvisorType,
+    get_clients_portfolio_from_advisor = graphene.Field(getPortfolioFromAdvisorType,
                                           token=graphene.String(),
                                           cpf=graphene.String(),
+                                          containing=graphene.String(),
                                           description='Retorna lista de cliente por assessor')
     
-    def resolve_get_advisors_from_advisor(self, info, token, cpf, description, **kwargs):
+    def resolve_get_clients_from_advisor(self, info, token, cpf, containing=None, **kwargs):
         if token == '123456':
             advisor = FinancialAdvisors.objects.get(cpf__exact=cpf)
-            filter = (Q(financial_advisor__exact=advisor))
+            profile = ProfileAdvisors.objects.get(advisor__exact=advisor)
+            
+            if containing:
+                filter = filter & searchProfileFor(containing)
+            
             data = Profile.objects.all().filter(filter)
             return {'data': data}
         pass        
