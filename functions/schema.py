@@ -538,7 +538,7 @@ class Query(graphene.ObjectType):
             return {'data': data, 'page': page}
 
         pass
-    get_advisors_portfolio_from_advisor = graphene.Field(getAdvisorsPortfolioType,
+    get_advisors_portfolio_from_advisor = graphene.Field(setAdvisorsPortfolioType,
                                           token=graphene.String('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'),
                                           cpf=graphene.String(),
                                           description='Retorna lista de cliente por assessor')
