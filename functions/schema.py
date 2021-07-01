@@ -453,7 +453,7 @@ class PortfolioFromAdvisorType(DjangoObjectType):
 
 
 class getPortfolioFromAdvisorType(graphene.ObjectType):
-    portfolio = graphene.List(PortfolioFromAdvisorType, description="Lista de clientes")
+    portfolio = graphene.List(setPortfolioType, description="Lista de clientes")
 
     def resolve_portfolio(self, info):
         data = self['data']
@@ -550,19 +550,16 @@ class Query(graphene.ObjectType):
             return {'data': data, 'page': page}
 
         pass
+    
     get_advisors_portfolio_from_advisor = graphene.Field(getPortfolioFromAdvisorType,
-                                          token=graphene.String('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'),
+                                          token=graphene.String(),
                                           cpf=graphene.String(),
                                           description='Retorna lista de cliente por assessor')
     
     def resolve_get_advisors_from_advisor(self, info, token, cpf, description, **kwargs):
-        if token:
-            if cpf:
-              advisor = FinancialAdvisors.objects.get(cpf__exact=cpf)
-              filter = (Q(financial_advisor__exact=advisor))
-
-              data = Profile.objects.all().filter(filter)
-              return data
-
-            
-                
+        if token == '123456':
+            advisor = FinancialAdvisors.objects.get(cpf__exact=cpf)
+            filter = (Q(financial_advisor__exact=advisor))
+            data = Profile.objects.all().filter(filter)
+            return {'data': data}
+        pass        
