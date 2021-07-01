@@ -447,6 +447,18 @@ class getFinancialAdvisorsType(graphene.ObjectType):
     def resolve_items_per_page(self, info):
         return items_per_page
 
+class PortfolioFromAdvisorType(DjangoObjectType):
+    class Meta:
+        model = FinancialAdvisors
+
+
+class getPortfolioFromAdvisorType(graphene.ObjectType):
+    portfolio = graphene.List(PortfolioFromAdvisorType, description="Lista de clientes")
+
+    def resolve_portfolio(self, info):
+        data = self['data']
+        return data
+
 
 class Query(graphene.ObjectType):
     get_profile = graphene.List(setProfileType,
@@ -538,7 +550,7 @@ class Query(graphene.ObjectType):
             return {'data': data, 'page': page}
 
         pass
-    get_advisors_portfolio_from_advisor = graphene.Field(setAdvisorsPortfolioType,
+    get_advisors_portfolio_from_advisor = graphene.Field(getPortfolioFromAdvisorType,
                                           token=graphene.String('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'),
                                           cpf=graphene.String(),
                                           description='Retorna lista de cliente por assessor')
