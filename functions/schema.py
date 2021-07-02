@@ -453,12 +453,17 @@ class PortfolioFromAdvisorType(DjangoObjectType):
 
 
 class getPortfolioFromAdvisorType(graphene.ObjectType):
-    portfolio = graphene.List(setPortfolioType, description="Lista de clientes")
+    portfolio = graphene.List(setPortfolioType, description='Lista de clientes')
 
     def resolve_portfolio(self, info):
         data = self['data']
         return data
+    
+    advisor = graphene.List(getAdvisorsType, description='Lista de assessores')
 
+    def resolve_advisor(self, info):
+        advisor = self['advisor']
+        return advisor
 
 class Query(graphene.ObjectType):
     get_profile = graphene.List(setProfileType,
@@ -552,19 +557,18 @@ class Query(graphene.ObjectType):
         pass
     
     get_clients_portfolio_from_advisor = graphene.Field(getPortfolioFromAdvisorType,
-                                          token=graphene.String(),
-                                          cpf=graphene.String(),
-                                          containing=graphene.String(),
+                                          token=graphene.String(description='Token de asseso'),
+                                          cpf=graphene.String(description='CPF do asessor'),
+                                          containing=graphene.String(description='Filtro da lista de Clientes'),
                                           description='Retorna lista de cliente por assessor')
     
     def resolve_get_clients_from_advisor(self, info, token, cpf, containing=None, **kwargs):
         if token == '123456':
             advisor = FinancialAdvisors.objects.get(cpf__exact=cpf)
-            profile = ProfileAdvisors.objects.get(advisor__exact=advisor)
+            profileAdvisors = ProfileAdvisors.objects.filter(advisor__exact=advisor).values_list('profile')
+            filter = (Q(id__in=profileAdvisors))
+        if containing:
+            filter = filter & searchProfileFor(containing)
             
-            if containing:
-                filter = filter & searchProfileFor(containing)
-            
-            data = Profile.objects.all().filter(filter)
-            return {'data': data}
-        pass        
+        data = Profile.objects.all().filter(filter)
+        return {'data': data, 'advisor': advisor}    
