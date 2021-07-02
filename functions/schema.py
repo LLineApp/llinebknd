@@ -562,7 +562,7 @@ class Query(graphene.ObjectType):
                                           containing=graphene.String(description='Filtro da lista de Clientes'),
                                           description='Retorna lista de cliente por assessor')
     
-    def rresolve_get_clients_portfolio_from_advisor(self, info, token, cpf, containing=None, **kwargs):
+    def resolve_get_clients_portfolio_from_advisor(self, info, token, cpf, containing=None, **kwargs):
         if token == '123456':
             advisor = FinancialAdvisors.objects.get(cpf__exact=cpf)
             profileAdvisors = ProfileAdvisors.objects.filter(advisor__exact=advisor).values_list('profile')
