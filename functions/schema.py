@@ -567,8 +567,9 @@ class Query(graphene.ObjectType):
             advisor = FinancialAdvisors.objects.get(cpf__exact=cpf)
             profileAdvisors = ProfileAdvisors.objects.filter(advisor__exact=advisor).values_list('profile')
             filter = (Q(id__in=profileAdvisors))
-        if containing:
-            filter = filter & searchProfileFor(containing)
+            if containing:
+                filter = filter & searchProfileFor(containing)
             
-        data = Profile.objects.all().filter(filter)
-        return {'data': data, 'advisor': advisor}    
+            data = Profile.objects.all().filter(filter)
+            return {'data': data, 'advisor': advisor}  
+        pass      
