@@ -447,6 +447,23 @@ class getFinancialAdvisorsType(graphene.ObjectType):
     def resolve_items_per_page(self, info):
         return items_per_page
 
+class PortfolioFromAdvisorType(DjangoObjectType):
+    class Meta:
+        model = FinancialAdvisors
+
+
+class getPortfolioFromAdvisorType(graphene.ObjectType):
+    portfolio = graphene.List(setPortfolioType, description='Lista de clientes')
+
+    def resolve_portfolio(self, info):
+        data = self['data']
+        return data
+    
+    advisor = graphene.Field(getAdvisorsType, description='Lista de assessores')
+
+    def resolve_advisor(self, info):
+        advisor = self['advisor']
+        return advisor
 
 class Query(graphene.ObjectType):
     get_profile = graphene.List(setProfileType,
@@ -538,3 +555,21 @@ class Query(graphene.ObjectType):
             return {'data': data, 'page': page}
 
         pass
+    
+    get_clients_portfolio_from_advisor = graphene.Field(getPortfolioFromAdvisorType,
+                                          token=graphene.String(description='Token de acesso'),
+                                          cpf=graphene.String(description='CPF do assessor'),
+                                          containing=graphene.String(description='Filtro da lista de Clientes'),
+                                          description='Retorna lista de cliente por assessor')
+    
+    def resolve_get_clients_portfolio_from_advisor(self, info, token, cpf, containing=None, **kwargs):
+        if token == 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c':
+            advisor = FinancialAdvisors.objects.get(cpf__exact=cpf)
+            profileAdvisors = ProfileAdvisors.objects.filter(advisor__exact=advisor).values_list('profile')
+            filter = (Q(id__in=profileAdvisors))
+            if containing:
+                filter = filter & searchProfileFor(containing)
+            
+            data = Profile.objects.all().filter(filter)
+            return {'data': data, 'advisor': advisor}  
+        pass      
