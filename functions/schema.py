@@ -459,7 +459,7 @@ class getPortfolioFromAdvisorType(graphene.ObjectType):
         data = self['data']
         return data
     
-    advisor = graphene.List(getAdvisorsType, description='Lista de assessores')
+    advisor = graphene.Field(getAdvisorsType, description='Lista de assessores')
 
     def resolve_advisor(self, info):
         advisor = self['advisor']
@@ -557,8 +557,8 @@ class Query(graphene.ObjectType):
         pass
     
     get_clients_portfolio_from_advisor = graphene.Field(getPortfolioFromAdvisorType,
-                                          token=graphene.String(description='Token de asseso'),
-                                          cpf=graphene.String(description='CPF do asessor'),
+                                          token=graphene.String(description='Token de acesso'),
+                                          cpf=graphene.String(description='CPF do assessor'),
                                           containing=graphene.String(description='Filtro da lista de Clientes'),
                                           description='Retorna lista de cliente por assessor')
     
