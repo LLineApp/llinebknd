@@ -5,7 +5,7 @@ from .models import *
 class ProfileAdvisorsOutput(graphene.ObjectType):
     profile_id = graphene.Int(required=True)
     advisors_id = graphene.Int(required=True)
-    main_advisor = graphene.NullBoolean(required=True)
+    main_advisor = graphene.Boolean(required=True)
 
 class FinancialAdvisorsOutput(graphene.ObjectType):
     fullname = graphene.String(required=False)
