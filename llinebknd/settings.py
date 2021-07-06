@@ -160,3 +160,10 @@ CORS_ORIGIN_WHITELIST = os.getenv(
 CORS_ORIGIN_REGEX_WHITELIST = [
     'http://localhost:3030',
 ]
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.environ.get('EMAIL_NAME', 'lline.auth@gmail.com')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASS', '%#gb6$twzmxup9ah$4k#(u11-@$0sfyd1c-t==e72v=wl35^pp')
