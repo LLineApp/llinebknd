@@ -196,7 +196,7 @@ class setProfile(graphene.Mutation):
                 if FinancialAdvisors.objects.filter(id=advisor).exists():
                     _advisor, created = ProfileAdvisors.objects.get_or_create(
                         profile=profile,
-                        advisor=FinancialAdvisors.objects.get(id=advisor)
+                        advisor=FinancialAdvisors.objects.get(id=advisor),  
                     )
 
                     if created:
