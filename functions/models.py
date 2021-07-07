@@ -135,6 +135,8 @@ class ProfileAdvisors(models.Model):
         Profile, null=False, on_delete=models.CASCADE)
     advisor = models.ForeignKey(
         FinancialAdvisors, null=False, on_delete=models.CASCADE)
+    main_advisor = models.BooleanField(
+        blank=True, null=True)
 
     class Meta:
         indexes = [

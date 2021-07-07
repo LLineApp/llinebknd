@@ -5,12 +5,15 @@ from .models import *
 class ProfileAdvisorsOutput(graphene.ObjectType):
     profile_id = graphene.Int(required=True)
     advisors_id = graphene.Int(required=True)
+    main_advisor = graphene.Boolean(required=True)
 
 class FinancialAdvisorsOutput(graphene.ObjectType):
     fullname = graphene.String(required=False)
     register = graphene.String(required=False)
     company = graphene.String(required=False)
     cpf = graphene.String(required=False)
+    profileadvisors__main_advisor = graphene.Boolean(required=False, 
+                                                    name='mainAdvisor')
 
 
 class InvestorExperiencesOutput(graphene.ObjectType):

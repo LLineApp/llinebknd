@@ -108,7 +108,13 @@ class setProfileType(DjangoObjectType):
     def resolve_advisors(self, info):
         profile_advisors = ProfileAdvisors.objects.filter(
             profile=self).values_list('advisor')
-        return FinancialAdvisors.objects.filter(id__in=profile_advisors).values()
+        return FinancialAdvisors.objects.filter(id__in=profile_advisors, 
+                                                profileadvisors__profile=self).values('fullname', 
+                                                                                    'register', 
+                                                                                    'company', 
+                                                                                    'cpf', 
+                                                                                    'profileadvisors__main_advisor')    
+        
 
 
 class setProfile(graphene.Mutation):
@@ -192,11 +198,13 @@ class setProfile(graphene.Mutation):
                 phones.save()
 
         if advisors:
-            for advisor in advisors:
+            for index, advisor in enumerate(advisors):
                 if FinancialAdvisors.objects.filter(id=advisor).exists():
                     _advisor, created = ProfileAdvisors.objects.get_or_create(
                         profile=profile,
-                        advisor=FinancialAdvisors.objects.get(id=advisor)
+                        advisor=FinancialAdvisors.objects.get(id=advisor),
+                        main_advisor=index == 0 & ProfileAdvisors.objects.filter(
+                        profile__exact=profile, advisor__exact=advisor).count() == 0
                     )
 
                     if created:
@@ -478,6 +486,8 @@ class Query(graphene.ObjectType):
             filter = (Q(cpf__exact=cpf))
 
             profile = Profile.objects.all().filter(filter)
+            
+            
 
             return profile
 
