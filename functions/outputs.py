@@ -12,7 +12,7 @@ class FinancialAdvisorsOutput(graphene.ObjectType):
     register = graphene.String(required=False)
     company = graphene.String(required=False)
     cpf = graphene.String(required=False)
-    profileadvisors_main_advisor = graphene.Boolean(required=False, 
+    profileadvisors__main_advisor = graphene.Boolean(required=False, 
                                                     name='mainAdvisor')
 
 
