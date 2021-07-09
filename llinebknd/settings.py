@@ -102,25 +102,25 @@ DATABASES = {
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+   # {
+   #     'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+   # },
+   #{
+   #     'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+   # },
+   # {
+   #     'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+   # },
+   # {
+   #     'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+   # },
 ]
 
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'pt-BR'
 
 TIME_ZONE = 'UTC'
 
@@ -160,3 +160,10 @@ CORS_ORIGIN_WHITELIST = os.getenv(
 CORS_ORIGIN_REGEX_WHITELIST = [
     'http://localhost:3030',
 ]
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.environ.get('EMAIL_NAME', 'lline.auth@gmail.com')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASS', '%#gb6$twzmxup9ah$4k#(u11-@$0sfyd1c-t==e72v=wl35^pp')
