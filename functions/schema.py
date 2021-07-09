@@ -323,7 +323,7 @@ class setAdvisorsLink(graphene.Mutation):
 
 class addAdvisorToProfileType(DjangoObjectType):
     class Meta:
-        model = AddAdvisorToPrfileOutput
+        model = ProfileAdvisors
 
 
 class addAdvisorToProfileData(graphene.Mutation):
@@ -331,13 +331,13 @@ class addAdvisorToProfileData(graphene.Mutation):
 
     class Arguments:
         token = graphene.String()
-        advisor_cpf = graphene.String()
-        profile_cpf = graphene.String()
+        advisor_id = graphene.String()
+        profile_id = graphene.String()
 
-def resolve_add_advisor_to_profile_data(self, info, token, advisor_cpf, profile_cpf, id, text, **kwargs):
-    if token:
-        cpf = str(getCPFFromAuth(token))
-        advisor = FinancialAdvisors.objects.filter(cpf__exact=cpf)
+def resolve_add_advisor_to_profile_data(self, info, token, advisor_id, profile_id, id, text, **kwargs):
+    cpf = str(getCPFFromAuth(token))
+    if cpf:
+        
     
 
 class Mutation(graphene.ObjectType):

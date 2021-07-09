@@ -2,10 +2,6 @@ import graphene
 from graphene_django import DjangoObjectType
 from .models import *
 
-class AddAdvisorToPrfileOutput(graphene.ObjectType):
-    profile_cpf = graphene.String(required=True)
-    advisor_cpf = graphene.String(required=True)
-
 class ProfileAdvisorsOutput(graphene.ObjectType):
     profile_id = graphene.Int(required=True)
     advisors_id = graphene.Int(required=True)
