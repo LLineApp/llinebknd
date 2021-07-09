@@ -321,6 +321,24 @@ class setAdvisorsLink(graphene.Mutation):
 
         return setAdvisorsLink(advisorsLinkData=advisorsLinkData)
 
+class addAdvisorToProfileType(DjangoObjectType):
+    class Meta:
+        model = AddAdvisorToPrfileOutput
+
+
+class addAdvisorToProfileData(graphene.Mutation):
+    addAdvisorToProfileData = graphene.Field(addAdvisorToProfileType, description='Adiciona um novo assessor para o cliente')
+
+    class Arguments:
+        token = graphene.String()
+        advisor_cpf = graphene.String()
+        profile_cpf = graphene.String()
+
+def resolve_add_advisor_to_profile_data(self, info, token, advisor_cpf, profile_cpf, id, text, **kwargs):
+    if token:
+        cpf = str(getCPFFromAuth(token))
+        advisor = FinancialAdvisors.objects.filter(cpf__exact=cpf)
+    
 
 class Mutation(graphene.ObjectType):
     set_profile = setProfile.Field()

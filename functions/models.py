@@ -130,6 +130,13 @@ class AdvisorsLink(models.Model):
     link = models.TextField()
 
 
+class AddAdvisorToProfile(models.Model):
+   advisor = models.ForeignKey(
+        FinancialAdvisors, null=False, on_delete=models.CASCADE)
+   advisor_cpf =  models.TextField(blank=True, null=False)
+   profile_cpf = models.TextField(blank=True, null=False)
+   
+
 class ProfileAdvisors(models.Model):
     profile = models.ForeignKey(
         Profile, null=False, on_delete=models.CASCADE)
