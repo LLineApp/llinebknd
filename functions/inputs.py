@@ -1,6 +1,7 @@
 import graphene
 from graphene_django import DjangoObjectType
 
+
 class ProfileAdvisorsInput(graphene.InputObjectType):
     profile = graphene.Int(required=True)
     advisors = graphene.Int(required=True)

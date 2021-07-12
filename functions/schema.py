@@ -1,16 +1,19 @@
 import graphene
+from graphene.types.objecttype import ObjectType
 
 from graphene_django import DjangoObjectType
 from graphql import GraphQLError
 
 from .models import *
 from django.db.models import Q, TextField, CharField
+from django.core.exceptions import ObjectDoesNotExist
 
 from .auth import getCPFFromAuth
 from .advisor import advisorsLink
 
 from .inputs import *
 from .outputs import *
+from .messages import *
 
 import math
 
@@ -108,13 +111,12 @@ class setProfileType(DjangoObjectType):
     def resolve_advisors(self, info):
         profile_advisors = ProfileAdvisors.objects.filter(
             profile=self).values_list('advisor')
-        return FinancialAdvisors.objects.filter(id__in=profile_advisors, 
-                                                profileadvisors__profile=self).values('fullname', 
-                                                                                    'register', 
-                                                                                    'company', 
-                                                                                    'cpf', 
-                                                                                    'profileadvisors__main_advisor')    
-        
+        return FinancialAdvisors.objects.filter(id__in=profile_advisors,
+                                                profileadvisors__profile=self).values('fullname',
+                                                                                      'register',
+                                                                                      'company',
+                                                                                      'cpf',
+                                                                                      'profileadvisors__main_advisor')
 
 
 class setProfile(graphene.Mutation):
@@ -204,7 +206,7 @@ class setProfile(graphene.Mutation):
                         profile=profile,
                         advisor=FinancialAdvisors.objects.get(id=advisor),
                         main_advisor=index == 0 & ProfileAdvisors.objects.filter(
-                        profile__exact=profile, advisor__exact=advisor).count() == 0
+                            profile__exact=profile, advisor__exact=advisor).count() == 0
                     )
 
                     if created:
@@ -322,10 +324,70 @@ class setAdvisorsLink(graphene.Mutation):
         return setAdvisorsLink(advisorsLinkData=advisorsLinkData)
 
 
+class messageType(ObjectType):
+    id = graphene.Int()
+    text = graphene.String()
+
+    def resolve_id(self, info):
+        return self["id"]
+
+    def resolve_text(self, info):
+        return self["text"]
+
+
+class addAdvisorToProfileData(graphene.Mutation):
+    message = graphene.Field(messageType, description="Resposta da inserção de novo assessor")
+
+    class Arguments:
+        token = graphene.String(description="Token de autenticação")
+        advisor_id = graphene.Int(description="Código do assessor a adicionar")
+        profile_id = graphene.Int(description="Código do cliente a vincular")
+
+    def mutate(self, info, token, advisor_id, profile_id):
+        cpf = str(getCPFFromAuth(token))
+        if cpf:
+            try:
+                _profile = Profile.objects.get(id=profile_id)
+            except ObjectDoesNotExist:
+                return addAdvisorToProfileData(message=PROFILE_NOT_EXISTS)
+
+            try:
+                _advisor = FinancialAdvisors.objects.get(id=advisor_id)
+            except ObjectDoesNotExist:
+                return addAdvisorToProfileData(message=ADVISOR_NOT_EXISTS)
+
+            try:
+                token_owner = FinancialAdvisors.objects.get(cpf=cpf)
+            except ObjectDoesNotExist:
+                return addAdvisorToProfileData(message=NOT_ALLOWED)
+
+            if not(ProfileAdvisors.objects.filter(
+                    profile_id=profile_id, advisor_id=token_owner.id, main_advisor=True).count()):
+                return addAdvisorToProfileData(message=NOT_ALLOWED_ADD)
+
+            if ProfileAdvisors.objects.filter(profile=_profile, advisor=_advisor).count() > 0:
+                return addAdvisorToProfileData(message=ALREADY_SET)
+
+            _advisor, created = ProfileAdvisors.objects.get_or_create(
+                profile=_profile,
+                advisor=_advisor,
+                main_advisor=False
+            )
+
+            if created:
+                _advisor.save()
+                return addAdvisorToProfileData(message=SUCCESS)
+            else:
+                return addAdvisorToProfileData(message=ALREADY_SET)
+
+        pass
+
+
 class Mutation(graphene.ObjectType):
     set_profile = setProfile.Field()
     set_advisors_link = setAdvisorsLink.Field()
     set_advisors_profile = setAdvisorsProfile.Field()
+    add_advisor_to_profile = addAdvisorToProfileData.Field(description="Vincula um assessor a um cliente")
 
 
 items_per_page = 10
@@ -455,23 +517,27 @@ class getFinancialAdvisorsType(graphene.ObjectType):
     def resolve_items_per_page(self, info):
         return items_per_page
 
+
 class PortfolioFromAdvisorType(DjangoObjectType):
     class Meta:
         model = FinancialAdvisors
 
 
 class getPortfolioFromAdvisorType(graphene.ObjectType):
-    portfolio = graphene.List(setPortfolioType, description='Lista de clientes')
+    portfolio = graphene.List(
+        setPortfolioType, description='Lista de clientes')
 
     def resolve_portfolio(self, info):
         data = self['data']
         return data
-    
-    advisor = graphene.Field(getAdvisorsType, description='Lista de assessores')
+
+    advisor = graphene.Field(
+        getAdvisorsType, description='Lista de assessores')
 
     def resolve_advisor(self, info):
         advisor = self['advisor']
         return advisor
+
 
 class Query(graphene.ObjectType):
     get_profile = graphene.List(setProfileType,
@@ -486,8 +552,6 @@ class Query(graphene.ObjectType):
             filter = (Q(cpf__exact=cpf))
 
             profile = Profile.objects.all().filter(filter)
-            
-            
 
             return profile
 
@@ -565,21 +629,25 @@ class Query(graphene.ObjectType):
             return {'data': data, 'page': page}
 
         pass
-    
+
     get_clients_portfolio_from_advisor = graphene.Field(getPortfolioFromAdvisorType,
-                                          token=graphene.String(description='Token de acesso'),
-                                          cpf=graphene.String(description='CPF do assessor'),
-                                          containing=graphene.String(description='Filtro da lista de Clientes'),
-                                          description='Retorna lista de cliente por assessor')
-    
+                                                        token=graphene.String(
+                                                            description='Token de acesso'),
+                                                        cpf=graphene.String(
+                                                            description='CPF do assessor'),
+                                                        containing=graphene.String(
+                                                            description='Filtro da lista de Clientes'),
+                                                        description='Retorna lista de cliente por assessor')
+
     def resolve_get_clients_portfolio_from_advisor(self, info, token, cpf, containing=None, **kwargs):
         if token == 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c':
             advisor = FinancialAdvisors.objects.get(cpf__exact=cpf)
-            profileAdvisors = ProfileAdvisors.objects.filter(advisor__exact=advisor).values_list('profile')
+            profileAdvisors = ProfileAdvisors.objects.filter(
+                advisor__exact=advisor).values_list('profile')
             filter = (Q(id__in=profileAdvisors))
             if containing:
                 filter = filter & searchProfileFor(containing)
-            
+
             data = Profile.objects.all().filter(filter)
-            return {'data': data, 'advisor': advisor}  
-        pass      
+            return {'data': data, 'advisor': advisor}
+        pass

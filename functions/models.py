@@ -128,7 +128,7 @@ class AdvisorsLink(models.Model):
         FinancialAdvisors, null=False, on_delete=models.CASCADE)
     created_at = models.DateField()
     link = models.TextField()
-
+ 
 
 class ProfileAdvisors(models.Model):
     profile = models.ForeignKey(
