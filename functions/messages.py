@@ -1,4 +1,4 @@
-SUCCESS = {
+SUCESS_ADD = {
     "id": 11,
     "text": "Assessor registrado com sucesso para este cliente"
 }
@@ -18,7 +18,7 @@ NOT_SET = {
     "text": "O assessor informado não está cadastrado para este cliente"
 }
 
-REMOVE_MAIN_ADVISOR = {
+NOT_ALLOWED_SELF_REMOVE = {
     "id": 23,
     "text": "Você não pode remover a si mesmo deste cliente"
 }

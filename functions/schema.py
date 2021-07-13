@@ -376,7 +376,7 @@ class addAdvisorToProfileData(graphene.Mutation):
 
             if created:
                 _advisor.save()
-                return addAdvisorToProfileData(message=SUCCESS)
+                return addAdvisorToProfileData(message=SUCESS_ADD)
             else:
                 return addAdvisorToProfileData(message=ALREADY_SET)
 
@@ -426,14 +426,14 @@ class removeAdvisorFromClient(graphene.Mutation):
                 _advisor.save()
                 return removeAdvisorFromClient(message=SUCESS_REMOVE)
             else:
-                return removeAdvisorFromClient(message=NOT_SET)    
+                return removeAdvisorFromClient(message=NOT_ALLOWED_SELF_REMOVE)    
 
 class Mutation(graphene.ObjectType):
     set_profile = setProfile.Field()
     set_advisors_link = setAdvisorsLink.Field()
     set_advisors_profile = setAdvisorsProfile.Field()
     add_advisor_to_profile = addAdvisorToProfileData.Field(description="Vincula um assessor a um cliente")
-    remove_advisor_from_client = removeAdvisorFromClient.Field(description="Remove assesor do cliente")
+    remove_advisor_from_client = removeAdvisorFromClient.Field(description="Remove assessor do cliente")
 
 
 items_per_page = 10
