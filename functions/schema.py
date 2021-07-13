@@ -383,6 +383,34 @@ class addAdvisorToProfileData(graphene.Mutation):
         pass
 
 
+class removeAdvisorFromClient(graphene.Mutation):
+    message = graphene.Field(messageType, description="Resposta da exclusão de um assessor")
+
+    class Arguments:
+        token = graphene.String(description="Token de autenticação")
+        advisor_id = graphene.Int(description="Código do assessor a remover")
+        profile_id = graphene.Int(description="Código do cliente que terá o assessor removido")
+        
+    def mutate(self, info, token, advisor_id, profile_id):
+        cpf = str(getCPFFromAuth(token))
+        if cpf:
+            try:
+                _advisor = FinancialAdvisors.objects.get(id=advisor_id)
+            except ObjectDoesNotExist:
+                return addAdvisorToProfileData(message=ADVISOR_NOT_EXISTS)
+            
+            try:
+                token_owner = FinancialAdvisors.objects.get(cpf=cpf)
+            except ObjectDoesNotExist:
+                return addAdvisorToProfileData(message=NOT_ALLOWED)
+
+            if not(ProfileAdvisors.objects.filter(
+                    profile_id=profile_id, advisor_id=token_owner.id, main_advisor=True).count()):
+                return addAdvisorToProfileData(message=NOT_ALLOWED_REMOVE)
+
+            if ProfileAdvisors.objects.filter(profile_id=profile_id, advisor_id=advisor_id).count() == 0:
+                return addAdvisorToProfileData(message=NOT_SET)
+
 class Mutation(graphene.ObjectType):
     set_profile = setProfile.Field()
     set_advisors_link = setAdvisorsLink.Field()
