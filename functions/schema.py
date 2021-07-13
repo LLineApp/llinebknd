@@ -397,24 +397,24 @@ class removeAdvisorFromClient(graphene.Mutation):
             try:
                 _profile = Profile.objects.get(id=profile_id)
             except ObjectDoesNotExist:
-                return addAdvisorToProfileData(message=PROFILE_NOT_EXISTS)
+                return removeAdvisorFromClient(message=PROFILE_NOT_EXISTS)
             
             try:
                 _advisor = FinancialAdvisors.objects.get(id=advisor_id)
             except ObjectDoesNotExist:
-                return addAdvisorToProfileData(message=ADVISOR_NOT_EXISTS)
+                return removeAdvisorFromClient(message=ADVISOR_NOT_EXISTS)
             
             try:
                 token_owner = FinancialAdvisors.objects.get(cpf=cpf)
             except ObjectDoesNotExist:
-                return addAdvisorToProfileData(message=NOT_ALLOWED)
+                return removeAdvisorFromClient(message=NOT_ALLOWED)
 
             if not(ProfileAdvisors.objects.filter(
                     profile_id=profile_id, advisor_id=token_owner.id, main_advisor=True).count()):
-                return addAdvisorToProfileData(message=NOT_ALLOWED_REMOVE)
+                return removeAdvisorFromClient(message=NOT_ALLOWED_REMOVE)
 
             if ProfileAdvisors.objects.filter(profile=_profile, advisor=_advisor).count() == 0:
-                return addAdvisorToProfileData(message=NOT_SET)
+                return removeAdvisorFromClient(message=NOT_SET)
 
             _advisor, deleted = ProfileAdvisors.objects.delete(
                 profile=_profile,
@@ -433,6 +433,7 @@ class Mutation(graphene.ObjectType):
     set_advisors_link = setAdvisorsLink.Field()
     set_advisors_profile = setAdvisorsProfile.Field()
     add_advisor_to_profile = addAdvisorToProfileData.Field(description="Vincula um assessor a um cliente")
+    remove
 
 
 items_per_page = 10
