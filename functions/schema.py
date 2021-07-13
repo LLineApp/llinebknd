@@ -428,6 +428,53 @@ class removeAdvisorFromClient(graphene.Mutation):
             else:
                 return removeAdvisorFromClient(message=NOT_SET)    
 
+
+class changeMainAdvisorOfClient(graphene.Mutation):
+    message = graphene.Field(messageType, description="Altera o assesor principal")
+
+    class Arguments:
+        token = graphene.String(description="Token de autenticação")
+        advisor_id = graphene.Int(description="Código do novo assesor principal")
+        profile_id = graphene.Int(description="Código do cliente que terá o principal assessor alterado")
+
+    def mutate(self, info, token, advisor_id, profile_id):
+        cpf = str(getCPFFromAuth(token))
+        if cpf:
+            try:
+                _profile = Profile.objects.get(id=profile_id)
+            except ObjectDoesNotExist:
+                return changeMainAdvisorOfClient(message=PROFILE_NOT_EXISTS)
+            
+            try:
+                _advisor = FinancialAdvisors.objects.get(id=advisor_id)
+            except ObjectDoesNotExist:
+                return changeMainAdvisorOfClient(message=ADVISOR_NOT_EXISTS)
+            
+            try:
+                token_owner = FinancialAdvisors.objects.get(cpf=cpf)
+            except ObjectDoesNotExist:
+                return changeMainAdvisorOfClient(message=NOT_ALLOWED)
+
+            if not(ProfileAdvisors.objects.filter(
+                    profile_id=profile_id, advisor_id=token_owner.id, main_advisor=True).count()):
+                return changeMainAdvisorOfClient(message=NOT_ALLOWED_CHANGE)
+
+            if ProfileAdvisors.objects.filter(profile=_profile, advisor=_advisor).count() == 0:
+                return changeMainAdvisorOfClient(message=NOT_SET)
+
+            _advisor, changed = ProfileAdvisors.objects.get_or_create(
+                profile=_profile,
+                advisor=_advisor,
+                main_advisor=False
+            )
+
+            if changed:
+                _advisor.save()
+                return changeMainAdvisorOfClient(message=SUCESS_REMOVE)
+            else:
+                return changeMainAdvisorOfClient(message=NOT_SET)    
+
+
 class Mutation(graphene.ObjectType):
     set_profile = setProfile.Field()
     set_advisors_link = setAdvisorsLink.Field()
