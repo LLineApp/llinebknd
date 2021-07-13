@@ -395,6 +395,11 @@ class removeAdvisorFromClient(graphene.Mutation):
         cpf = str(getCPFFromAuth(token))
         if cpf:
             try:
+                _profile = Profile.objects.get(id=profile_id)
+            except ObjectDoesNotExist:
+                return addAdvisorToProfileData(message=PROFILE_NOT_EXISTS)
+            
+            try:
                 _advisor = FinancialAdvisors.objects.get(id=advisor_id)
             except ObjectDoesNotExist:
                 return addAdvisorToProfileData(message=ADVISOR_NOT_EXISTS)
@@ -408,8 +413,20 @@ class removeAdvisorFromClient(graphene.Mutation):
                     profile_id=profile_id, advisor_id=token_owner.id, main_advisor=True).count()):
                 return addAdvisorToProfileData(message=NOT_ALLOWED_REMOVE)
 
-            if ProfileAdvisors.objects.filter(profile_id=profile_id, advisor_id=advisor_id).count() == 0:
+            if ProfileAdvisors.objects.filter(profile=_profile, advisor=_advisor).count() == 0:
                 return addAdvisorToProfileData(message=NOT_SET)
+
+            _advisor, deleted = ProfileAdvisors.objects.delete(
+                profile=_profile,
+                advisor=_advisor,
+                main_advisor=False
+            )
+
+            if deleted:
+                _advisor.save()
+                return removeAdvisorFromClient(message=SUCESS_REMOVE)
+            else:
+                return removeAdvisorFromClient(message=NOT_SET)    
 
 class Mutation(graphene.ObjectType):
     set_profile = setProfile.Field()
