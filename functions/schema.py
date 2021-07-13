@@ -470,7 +470,7 @@ class changeMainAdvisorOfClient(graphene.Mutation):
 
             if changed:
                 _advisor.save()
-                return changeMainAdvisorOfClient(message=SUCESS_REMOVE)
+                return changeMainAdvisorOfClient(message=SUCESS_CHANGE)
             else:
                 return changeMainAdvisorOfClient(message=NOT_SET)    
 
