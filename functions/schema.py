@@ -433,7 +433,7 @@ class Mutation(graphene.ObjectType):
     set_advisors_link = setAdvisorsLink.Field()
     set_advisors_profile = setAdvisorsProfile.Field()
     add_advisor_to_profile = addAdvisorToProfileData.Field(description="Vincula um assessor a um cliente")
-    remove
+    remove_advisor_from_client = removeAdvisorFromClient.Field(description="Remove assesor do cliente")
 
 
 items_per_page = 10
