@@ -408,25 +408,24 @@ class removeAdvisorFromClient(graphene.Mutation):
                 token_owner = FinancialAdvisors.objects.get(cpf=cpf)
             except ObjectDoesNotExist:
                 return removeAdvisorFromClient(message=NOT_ALLOWED)
+            
+            if advisor_id == token_owner.id:
+                return removeAdvisorFromClient(message=NOT_ALLOWED_SELF_REMOVE)
 
             if not(ProfileAdvisors.objects.filter(
                     profile_id=profile_id, advisor_id=token_owner.id, main_advisor=True).count()):
                 return removeAdvisorFromClient(message=NOT_ALLOWED_REMOVE)
 
-            if ProfileAdvisors.objects.filter(profile=_profile, advisor=_advisor).count() == 0:
-                return removeAdvisorFromClient(message=NOT_SET)
-
-            _advisor, deleted = ProfileAdvisors.objects.delete(
+            profile_advisor = ProfileAdvisors.objects.filter(
                 profile=_profile,
                 advisor=_advisor,
-                main_advisor=False
             )
 
-            if deleted:
-                _advisor.save()
+            if profile_advisor:
+                _advisor.delete()
                 return removeAdvisorFromClient(message=SUCESS_REMOVE)
             else:
-                return removeAdvisorFromClient(message=NOT_ALLOWED_SELF_REMOVE)    
+                return removeAdvisorFromClient(message=NOT_SET)    
 
 class Mutation(graphene.ObjectType):
     set_profile = setProfile.Field()
