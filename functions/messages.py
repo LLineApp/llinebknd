@@ -8,6 +8,11 @@ SUCESS_REMOVE = {
     "text": "Assessor removido com sucesso deste cliente" 
 }
 
+SUCESS_CHANGE = {
+    "id": 13,
+    "text": "Assessor atribuído como principal com sucesso para este cliente"
+}
+
 ALREADY_SET = {
     "id": 21,
     "text": "O assessor informado já está cadastrado para este cliente"
@@ -31,6 +36,11 @@ NOT_ALLOWED_ADD = {
 NOT_ALLOWED_REMOVE = {
     "id": 92,
     "text": "Você não tem permissão para remover um assessor/SDR para este cliente" 
+}
+
+NOT_ALLOWED_CHANGE = {
+    "id": 93,
+    "text": "Você não tem permissão para alterar um assessor/SDR para este cliente"
 }
 
 NOT_ALLOWED = {
