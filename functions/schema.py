@@ -428,7 +428,7 @@ class removeAdvisorFromProfile(graphene.Mutation):
                 return removeAdvisorFromProfile(message=NOT_SET)    
 
 
-class changeMainAdvisorOfClient(graphene.Mutation):
+class changeMainAdvisorOfProfile(graphene.Mutation):
     message = graphene.Field(messageType, description="Altera o assessor principal")
 
     class Arguments:
@@ -442,17 +442,17 @@ class changeMainAdvisorOfClient(graphene.Mutation):
             try:
                 _profile = Profile.objects.get(id=profile_id)
             except ObjectDoesNotExist:
-                return changeMainAdvisorOfClient(message=PROFILE_NOT_EXISTS)
+                return changeMainAdvisorOfProfile(message=PROFILE_NOT_EXISTS)
             
             try:
                 _advisor = FinancialAdvisors.objects.get(id=advisor_id)
             except ObjectDoesNotExist:
-                return changeMainAdvisorOfClient(message=ADVISOR_NOT_EXISTS)
+                return changeMainAdvisorOfProfile(message=ADVISOR_NOT_EXISTS)
             
             try:
                 token_owner = FinancialAdvisors.objects.get(cpf=cpf)
             except ObjectDoesNotExist:
-                return changeMainAdvisorOfClient(message=NOT_ALLOWED)
+                return changeMainAdvisorOfProfile(message=NOT_ALLOWED)
             
 
             profile_advisor = ProfileAdvisors.objects.filter(profile=_profile,advisor=_advisor)
@@ -461,9 +461,9 @@ class changeMainAdvisorOfClient(graphene.Mutation):
             if profile_advisor & token_owner_advisor:
                 profile_advisor.main_advisor = True
                 token_owner_advisor.main_advisor = False
-                return changeMainAdvisorOfClient(message=SUCESS_CHANGE)
+                return changeMainAdvisorOfProfile(message=SUCESS_CHANGE)
             else:
-                return changeMainAdvisorOfClient(message=NOT_SET)
+                return changeMainAdvisorOfProfile(message=NOT_SET)
 
 class Mutation(graphene.ObjectType):
     set_profile = setProfile.Field()
@@ -471,7 +471,7 @@ class Mutation(graphene.ObjectType):
     set_advisors_profile = setAdvisorsProfile.Field()
     add_advisor_to_profile = addAdvisorToProfile.Field(description="Vincula um assessor a um cliente")
     remove_advisor_from_profile = removeAdvisorFromProfile.Field(description="Remove assessor do cliente")
-    change_main_advisor_of_profile = changeMainAdvisorOfClient.Field(description="Altera o assesor principal do cliente")
+    change_main_advisor_of_profile = changeMainAdvisorOfProfile.Field(description="Altera o assesor principal do cliente")
 
 items_per_page = 10
 
