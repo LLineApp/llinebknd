@@ -454,9 +454,6 @@ class changeMainAdvisorOfClient(graphene.Mutation):
             except ObjectDoesNotExist:
                 return changeMainAdvisorOfClient(message=NOT_ALLOWED)
             
-            if not(ProfileAdvisors.objects.filter(
-                    profile_id=profile_id, advisor_id=token_owner.id, main_advisor=True)):
-                return changeMainAdvisorOfClient(message=NOT_ALLOWED_CHANGE)
 
             profile_advisor = ProfileAdvisors.objects.filter(
                 profile=_profile,
