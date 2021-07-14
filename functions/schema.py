@@ -335,7 +335,7 @@ class messageType(ObjectType):
         return self["text"]
 
 
-class addAdvisorToProfileData(graphene.Mutation):
+class addAdvisorToProfile(graphene.Mutation):
     message = graphene.Field(messageType, description="Resposta da inserção de novo assessor")
 
     class Arguments:
@@ -349,24 +349,24 @@ class addAdvisorToProfileData(graphene.Mutation):
             try:
                 _profile = Profile.objects.get(id=profile_id)
             except ObjectDoesNotExist:
-                return addAdvisorToProfileData(message=PROFILE_NOT_EXISTS)
+                return addAdvisorToProfile(message=PROFILE_NOT_EXISTS)
 
             try:
                 _advisor = FinancialAdvisors.objects.get(id=advisor_id)
             except ObjectDoesNotExist:
-                return addAdvisorToProfileData(message=ADVISOR_NOT_EXISTS)
+                return addAdvisorToProfile(message=ADVISOR_NOT_EXISTS)
 
             try:
                 token_owner = FinancialAdvisors.objects.get(cpf=cpf)
             except ObjectDoesNotExist:
-                return addAdvisorToProfileData(message=NOT_ALLOWED)
+                return addAdvisorToProfile(message=NOT_ALLOWED)
 
             if not(ProfileAdvisors.objects.filter(
                     profile_id=profile_id, advisor_id=token_owner.id, main_advisor=True).count()):
-                return addAdvisorToProfileData(message=NOT_ALLOWED_ADD)
+                return addAdvisorToProfile(message=NOT_ALLOWED_ADD)
 
             if ProfileAdvisors.objects.filter(profile=_profile, advisor=_advisor).count() > 0:
-                return addAdvisorToProfileData(message=ALREADY_SET)
+                return addAdvisorToProfile(message=ALREADY_SET)
 
             _advisor, created = ProfileAdvisors.objects.get_or_create(
                 profile=_profile,
@@ -376,14 +376,14 @@ class addAdvisorToProfileData(graphene.Mutation):
 
             if created:
                 _advisor.save()
-                return addAdvisorToProfileData(message=SUCESS_ADD)
+                return addAdvisorToProfile(message=SUCESS_ADD)
             else:
-                return addAdvisorToProfileData(message=ALREADY_SET)
+                return addAdvisorToProfile(message=ALREADY_SET)
 
         pass
 
 
-class removeAdvisorFromClient(graphene.Mutation):
+class removeAdvisorFromProfile(graphene.Mutation):
     message = graphene.Field(messageType, description="Resposta da exclusão de um assessor")
 
     class Arguments:
@@ -397,24 +397,24 @@ class removeAdvisorFromClient(graphene.Mutation):
             try:
                 _profile = Profile.objects.get(id=profile_id)
             except ObjectDoesNotExist:
-                return removeAdvisorFromClient(message=PROFILE_NOT_EXISTS)
+                return removeAdvisorFromProfile(message=PROFILE_NOT_EXISTS)
             
             try:
                 _advisor = FinancialAdvisors.objects.get(id=advisor_id)
             except ObjectDoesNotExist:
-                return removeAdvisorFromClient(message=ADVISOR_NOT_EXISTS)
+                return removeAdvisorFromProfile(message=ADVISOR_NOT_EXISTS)
             
             try:
                 token_owner = FinancialAdvisors.objects.get(cpf=cpf)
             except ObjectDoesNotExist:
-                return removeAdvisorFromClient(message=NOT_ALLOWED)
+                return removeAdvisorFromProfile(message=NOT_ALLOWED)
             
             if advisor_id == token_owner.id:
-                return removeAdvisorFromClient(message=NOT_ALLOWED_SELF_REMOVE)
+                return removeAdvisorFromProfile(message=NOT_ALLOWED_SELF_REMOVE)
 
             if not(ProfileAdvisors.objects.filter(
                     profile_id=profile_id, advisor_id=token_owner.id, main_advisor=True).count()):
-                return removeAdvisorFromClient(message=NOT_ALLOWED_REMOVE)
+                return removeAdvisorFromProfile(message=NOT_ALLOWED_REMOVE)
 
             profile_advisor = ProfileAdvisors.objects.filter(
                 profile=_profile,
@@ -422,17 +422,17 @@ class removeAdvisorFromClient(graphene.Mutation):
             )
 
             if profile_advisor:
-                _advisor.delete()
-                return removeAdvisorFromClient(message=SUCESS_REMOVE)
+                profile_advisor.delete()
+                return removeAdvisorFromProfile(message=SUCESS_REMOVE)
             else:
-                return removeAdvisorFromClient(message=NOT_SET)    
+                return removeAdvisorFromProfile(message=NOT_SET)    
 
 class Mutation(graphene.ObjectType):
     set_profile = setProfile.Field()
     set_advisors_link = setAdvisorsLink.Field()
     set_advisors_profile = setAdvisorsProfile.Field()
-    add_advisor_to_profile = addAdvisorToProfileData.Field(description="Vincula um assessor a um cliente")
-    remove_advisor_from_client = removeAdvisorFromClient.Field(description="Remove assessor do cliente")
+    add_advisor_to_profile = addAdvisorToProfile.Field(description="Vincula um assessor a um cliente")
+    remove_advisor_from_profile = removeAdvisorFromProfile.Field(description="Remove assessor do cliente")
 
 
 items_per_page = 10
