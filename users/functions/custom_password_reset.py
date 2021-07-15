@@ -25,7 +25,7 @@ from django.utils.translation import gettext, gettext_lazy as _
 
 
 class CustomPasswordResetForm(forms.Form):
-    cpf = forms.CharField(label=_("CPF"), max_length=11)
+    cpf = forms.CharField(label=_(""), max_length=11)
 
     def send_mail(self, subject_template_name, email_template_name,
                   context, from_email, to_email, html_email_template_name=None):
