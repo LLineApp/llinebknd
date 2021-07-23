@@ -8,13 +8,13 @@ class ProfileAdvisorsOutput(graphene.ObjectType):
     main_advisor = graphene.Boolean(required=True)
 
 class FinancialAdvisorsOutput(graphene.ObjectType):
+    id = graphene.Int(required=False)                                                
     fullname = graphene.String(required=False)
     register = graphene.String(required=False)
     company = graphene.String(required=False)
     cpf = graphene.String(required=False)
     profileadvisors__main_advisor = graphene.Boolean(required=False, 
                                                     name='mainAdvisor')
-    id = graphene.Int(required=False)                                                
 
 
 class InvestorExperiencesOutput(graphene.ObjectType):

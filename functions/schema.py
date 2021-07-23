@@ -117,7 +117,7 @@ class setProfileType(DjangoObjectType):
                                                                                       'register',
                                                                                       'company',
                                                                                       'cpf',
-                                                                                      'profileadvisors__main_advisor',)
+                                                                                      'profileadvisors__main_advisor')
 
 
 class setProfile(graphene.Mutation):
