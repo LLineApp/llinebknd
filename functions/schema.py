@@ -112,12 +112,12 @@ class setProfileType(DjangoObjectType):
         profile_advisors = ProfileAdvisors.objects.filter(
             profile=self).values_list('advisor')
         return FinancialAdvisors.objects.filter(id__in=profile_advisors,
-                                                profileadvisors__profile=self).values('fullname',
+                                                profileadvisors__profile=self).values('id',
+                                                                                      'fullname',
                                                                                       'register',
                                                                                       'company',
                                                                                       'cpf',
-                                                                                      'profileadvisors__main_advisor',
-                                                                                      'id'                           )
+                                                                                      'profileadvisors__main_advisor',)
 
 
 class setProfile(graphene.Mutation):
