@@ -14,6 +14,7 @@ class FinancialAdvisorsOutput(graphene.ObjectType):
     cpf = graphene.String(required=False)
     profileadvisors__main_advisor = graphene.Boolean(required=False, 
                                                     name='mainAdvisor')
+    id = graphene.Int(required=False)                                                
 
 
 class InvestorExperiencesOutput(graphene.ObjectType):
