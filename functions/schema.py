@@ -656,8 +656,8 @@ class Query(graphene.ObjectType):
     def resolve_get_advisors_portfolio(self, info, token, page, containing=None, **kwargs):
         if token:
             cpfFromAuth = str(getCPFFromAuth(token))
-            advisor = FinancialAdvisors.objects.get(cpf__exact=cpfFromAuth)
-            filter = (Q(financial_advisor__exact=advisor))
+            profiles = ProfileAdvisors.objects.filter(advisor__cpf__exact=cpfFromAuth).values('profile_id')
+            filter = (Q(id__in=profiles))
 
             if containing:
                 filter = filter & searchProfileFor(containing)
