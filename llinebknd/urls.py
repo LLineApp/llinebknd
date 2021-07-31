@@ -23,6 +23,7 @@ from django.contrib.auth import views as auth_views
 
 from users.templates import *
 from users.functions.custom_password_reset import CustomPasswordResetForm
+from functions import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -31,4 +32,5 @@ urlpatterns = [
     path('password_reset_confirm/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='users/password_reset_confirm.html'), name='password_reset_confirm'),
     path('password_reset_done/', auth_views.PasswordResetDoneView.as_view(template_name='users/password_reset_done.html'), name='password_reset_done'),
     path('password_reset_complete/', auth_views.PasswordResetCompleteView.as_view(template_name='users/password_reset_complete.html'), name='password_reset_complete'),
+    path('help/getClientsPortfolioFromAdvisor/', views.get_clients_portfolio_from_advisor_help)
 ]
