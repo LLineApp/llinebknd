@@ -1,116 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
-      integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l"
-      crossorigin="anonymous"
-    />
-    <script
-      src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-      integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns"
-      crossorigin="anonymous"
-    ></script>
-    <title>Query getClientsPortfolioFromAdvisor</title>
-  </head>
-  <body>
-    <h1 class="display-4 text-center" id="main-title">
-      Uso de API's abertas do LLine
-    </h1>
-  <div class="wrapper">
-      <div class="sidebar">
-        <div class="profile">
-          <img
-            src="https://res.cloudinary.com/dimvn159r/image/upload/v1610500338/LLine/LLine_squared.png"
-            alt="logo_lline"
-          />
-        </div>
-        <ul>
-          <li>
-            <a href="#graphql" class="active">
-              <span class="item">GraphQL</span>
-            </a>
-          </li>
-          <li>
-            <a href="#graphiql">
-              <span class="item">Graph<i>i</i>QL</span>
-            </a>
-          </li>
-          <li>
-            <a href="#get_clients_portfolio_from_advisor">
-              <span class="item">getClientsPortfolioFromAdvisor</span>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
-    <div class="container-sm">
-      <div class="subtitle" id="graphql">GraphQL</div>
-      <p>
-        Para saber como usar o GraphQL recomendamos que você acesse este
-        <a href="https://graphql.org/code/" target="_blank">manual</a>. Nele
-        você encontrará como consumir uma API GraphQL nas mais diversas
-        linguagens.
-      </p>
-      <div class="subtitle" id="graphiql">Graph<i>i</i>QL</div>
-      <p>
-        O
-        <a
-          href="https://github.com/graphql/graphiql/tree/main/packages/graphiql#graphiql"
-          target="_blank"
-          >Graph<i>i</i>QL</a
-        >
-        é uma interface acoplada ao backend do LLine que permite ao
-        desenvolvedor construir queries e mutations GraphQL de maneira fácil e
-        assertiva.
-      </p>
-      <p>
-        Não há necessidade de instalar nada para usá-lo no LLine, bastando
-        somente acessar este endereço (<a id="graphiqlURL"></a>) para ter acesso
-        á sua interface.
-      </p>
-      <p>
-        <b>Script:</b> É a área onde você pode codar. o Graph<i>i</i>QL possui
-        um editor funcional com recursos de autocompletar e verificação de
-        sintaxe.
-      </p>
-      <p>
-        <b>Resultado:</b> É nesta área que é exibido o resultado da consulta, no
-        formato JSON.
-      </p>
-      <p>
-        <b>Guia Rápido de Referência:</b> Nesta área você pode navegar entre as
-        <i>queries</i> e <i>mutations</i> para identificar rapidamente quais os
-        parâmetros de cada <i>schema</i> e também os campos de retorno
-        disponíveis.
-      </p>
-      <div class="text-center">
-        <img
-          src="https://res.cloudinary.com/dimvn159r/image/upload/v1627612655/LLine/GraphiQL_help.png"
-          class="img-fluid"
-          alt=""
-          id="img-graphiql"
-        />
-      </div>
 
-      <div class="subtitle" id="get_clients_portfolio_from_advisor">
-        getClientsPortfolioFromAdvisor
-      </div>
-      <p>
-        A <i>query</i> <b>getClientsPortfolioFromAdvisor</b> retorna todos os
-        clientes vinculados a um determinado assessor ou SDR.
-      </p>
-      <p>A sintaxe completa da query é esta:</p>
-      <pre class="pre-scrollable">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+    integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous" />
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns"
+    crossorigin="anonymous"></script>
+  <title>Query getClientsPortfolioFromAdvisor</title>
+</head>
+
+<body>
+  <h1 id="main-title">
+    Uso de API's abertas do LLine
+  </h1>
+  <div class="sidebar">
+    <div class="profile">
+      <img src="https://res.cloudinary.com/tiagogbt/image/upload/v1625797383/logoblack_mrws8y.png" alt="logo_lline" />
+    </div>
+    <ul>
+      <li>
+        <a href="#graphql" class="active">
+          <span class="item">GraphQL</span>
+        </a>
+      </li>
+      <li>
+        <a href="#graphiql">
+          <span class="item">Graph<i>i</i>QL</span>
+        </a>
+      </li>
+      <li>
+        <a href="#get_clients_portfolio_from_advisor">
+          <span class="item">getClientsPortfolioFromAdvisor</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div id="data">
+    <div class="subtitle" id="graphql">GraphQL</div>
+    <p>
+      Para saber como usar o GraphQL recomendamos que você acesse este
+      <a href="https://graphql.org/code/" target="_blank">manual</a>. Nele
+      você encontrará como consumir uma API GraphQL nas mais diversas
+      linguagens.
+    </p>
+    <div class="subtitle" id="graphiql">Graph<i>i</i>QL</div>
+    <p>
+      O
+      <a href="https://github.com/graphql/graphiql/tree/main/packages/graphiql#graphiql"
+        target="_blank">Graph<i>i</i>QL</a>
+      é uma interface acoplada ao backend do LLine que permite ao
+      desenvolvedor construir queries e mutations GraphQL de maneira fácil e
+      assertiva.
+    </p>
+    <p>
+      Não há necessidade de instalar nada para usá-lo no LLine, bastando
+      somente acessar este endereço (<a id="graphiqlURL"></a>) para ter acesso
+      á sua interface.
+    </p>
+    <p>
+      <b>Script:</b> É a área onde você pode codar. o Graph<i>i</i>QL possui
+      um editor funcional com recursos de autocompletar e verificação de
+      sintaxe.
+    </p>
+    <p>
+      <b>Resultado:</b> É nesta área que é exibido o resultado da consulta, no
+      formato JSON.
+    </p>
+    <p>
+      <b>Guia Rápido de Referência:</b> Nesta área você pode navegar entre as
+      <i>queries</i> e <i>mutations</i> para identificar rapidamente quais os
+      parâmetros de cada <i>schema</i> e também os campos de retorno
+      disponíveis.
+    </p>
+    <div class="text-center">
+      <img src="https://res.cloudinary.com/dimvn159r/image/upload/v1627612655/LLine/GraphiQL_help.png" class="img-fluid"
+        alt="" id="img-graphiql" />
+    </div>
+
+    <div class="subtitle" id="get_clients_portfolio_from_advisor">
+      getClientsPortfolioFromAdvisor
+    </div>
+    <p>
+      A <i>query</i> <b>getClientsPortfolioFromAdvisor</b> retorna todos os
+      clientes vinculados a um determinado assessor ou SDR.
+    </p>
+    <p>A sintaxe completa da query é esta:</p>
+    <pre class="pre-scrollable">
 <code>{</code>
 <code>  getClientsPortfolioFromAdvisor(token: "TOKEN", cpf: "99999999999", containing: "") {</code>
 <code>    portfolio {</code>
@@ -175,27 +157,27 @@
 <code>  }</code>
 <code>}</code>
       </pre>
-      <p>Os parâmetros para esta query são:</p>
-      <p>
-        <code>token:</code> O TOKEN de conexão fornecido pelo suporte do LLine;
-      </p>
-      <p><code>cpf:</code> O CPF do assessor/SDR a ser consultado;</p>
-      <p>
-        <code>containing:</code> Este parâmetro serve como filtro de clientes.
-        Quando preenchido, a query irá retornar somente os clientes que
-        contiverem em algum de seus campos o texto informado. Caso não queira
-        filtrar, basta deixar vazio (<code>""</code>).
-      </p>
-      <p>
-        Você não precisa informar todos os campos de retorno. Essa é a beleza do
-        GraphQL, você pode dizer a ele quais as informações que você deseja que
-        ele retorne.
-      </p>
-      <p>
-        Por exemplo: Você deseja retornar somente os nomes e CPF's dos clientes
-        de um assessor. Basta montar a query da seguinte forma:
-      </p>
-      <pre class="pre-scrollable">
+    <p>Os parâmetros para esta query são:</p>
+    <p>
+      <code>token:</code> O TOKEN de conexão fornecido pelo suporte do LLine;
+    </p>
+    <p><code>cpf:</code> O CPF do assessor/SDR a ser consultado;</p>
+    <p>
+      <code>containing:</code> Este parâmetro serve como filtro de clientes.
+      Quando preenchido, a query irá retornar somente os clientes que
+      contiverem em algum de seus campos o texto informado. Caso não queira
+      filtrar, basta deixar vazio (<code>""</code>).
+    </p>
+    <p>
+      Você não precisa informar todos os campos de retorno. Essa é a beleza do
+      GraphQL, você pode dizer a ele quais as informações que você deseja que
+      ele retorne.
+    </p>
+    <p>
+      Por exemplo: Você deseja retornar somente os nomes e CPF's dos clientes
+      de um assessor. Basta montar a query da seguinte forma:
+    </p>
+    <pre class="pre-scrollable">
 <code>{</code>
 <code>  getClientsPortfolioFromAdvisor(token: "TOKEN", cpf: "99999999999", containing: "") {</code>
 <code>    portfolio {</code>
@@ -205,11 +187,11 @@
 <code>  }</code>
 <code>}</code>
       </pre>
-      <p>
-        O retorno será um array de objetos contendo os elementos
-        <i>fullname</i> e <i>cpf</i> de cada cliente do assessor informado:
-      </p>
-      <pre>
+    <p>
+      O retorno será um array de objetos contendo os elementos
+      <i>fullname</i> e <i>cpf</i> de cada cliente do assessor informado:
+    </p>
+    <pre>
 <code>{</code>
 <code>  "data": {</code>
 <code>    "getClientsPortfolioFromAdvisor": {</code>
@@ -235,106 +217,132 @@
 <code>  }</code>
 <code>}</code>
       </pre>
-    </div>
-  </body>
+  </div>
+</body>
 
-  <script type="text/javascript">
-    function graphiqlURL() {
-      const link = document.getElementById("graphiqlURL");
-      const port = ["localhost", "127.0.0.1"].includes(window.location.hostname)
-        ? ":8000"
-        : "";
-      const url =
-        window.location.protocol +
-        "//" +
-        window.location.hostname +
-        port +
-        "/graphql/";
+<script type="text/javascript">
+  function graphiqlURL() {
+    const link = document.getElementById("graphiqlURL");
+    const port = ["localhost", "127.0.0.1"].includes(window.location.hostname)
+      ? ":8000"
+      : "";
+    const url =
+      window.location.protocol +
+      "//" +
+      window.location.hostname +
+      port +
+      "/graphql/";
 
-      link.innerHTML = url;
-      link.href = url;
-      link.target = "_blank";
-    }
+    link.innerHTML = url;
+    link.href = url;
+    link.target = "_blank";
+  }
 
-    window.graphiqlURL();
-  </script>
+  window.graphiqlURL();
+</script>
 
-  <style>
-    @import url("https://fonts.googleapis.com/css2?family=Raleway:wght@300&display=swap");
-    .container-sm {
-      padding-left: 280px;
-      margin-left: 5px;
-    }
-    #main-title {
-      margin-top: 5%;
-      margin-bottom: 5%;
-    }
-    .subtitle {
-      margin-bottom: 20px;
-      font-weight: bold;
-      font-size: larger;
-      background-color: #26fed5;
-      padding-top: 5px;
-      padding-left: 10px;
-      padding-bottom: 5px;
-    }
-    #img-graphiql {
-      padding-left: 16%;
-      padding-right: 16%;
-      padding-top: 2%;
-      padding-bottom: 2%;
-    }
-    .wrapper .sidebar {
-      background: rgb(0, 0, 0);
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 270px;
-      height: 100%;
-      padding: 20px 0;
-      transition: all 0.5s ease;
-    }
-    .wrapper .sidebar .profile {
-      margin-bottom: 30px;
-      text-align: center;
-    }
-    .wrapper .sidebar .profile img {
-      display: block;
-      width: 100px;
-      height: 100px;
-      margin: 0 auto;
-    }
-    .wrapper .sidebar .profile p {
-      color: rgb(255, 255, 255);
-      font-size: 14px;
-    }
-    pre {
-      background-color: lightgray;
-      padding-left: 15px;
-      counter-reset: line;
+<style>
+  @import url("https://fonts.googleapis.com/css2?family=Raleway:wght@300&display=swap");
 
-      padding: 10px 16px;
-      border-radius: 2px;
-      border-top: 4px solid #00aeef;
-      -moz-box-shadow: inset 0 0 10px #000;
-      box-shadow: inset 0 0 10px #000;
-    }
-    pre code {
-      margin-top: 0px;
-      margin-bottom: 0px;
-      padding-top: 0px;
-      padding-bottom: 0px;
-    }
-    pre code:before {
-      display: inline-block;
-      counter-increment: line;
-      content: counter(line);
-      border-right: 1px solid #ddd;
-      padding: 0 0.5em;
-      min-width: 35px;
-      text-align: right;
-      margin-right: 0.5em;
-      color: #888;
-    }
-  </style>
+  * {
+    font-family: "Raleway", sans-serif;
+  }
+
+  #data {
+    float: right;
+    position: relative;
+    width: 80%;
+    padding-right: 3%;
+  }
+
+  #data .p {
+    padding-left: 2%;
+  }
+
+  #main-title {
+    display: block;
+    margin: 2vw auto;
+    position: relative;
+    float: right;
+    width: 80%;
+    text-align: center;
+  }
+
+  .subtitle {
+    margin-bottom: 20px;
+    font-weight: bold;
+    font-size: larger;
+    background-color: #26fed5;
+    padding-top: 5px;
+    padding-left: 10px;
+    padding-bottom: 5px;
+    margin-left: 0%;
+
+  }
+
+  #img-graphiql {
+    padding-left: 16%;
+    padding-right: 16%;
+    padding-top: 2%;
+    padding-bottom: 2%;
+  }
+
+  .sidebar {
+    float: left;
+    background: white;
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 20%;
+    transition: all 0.5s ease;
+  }
+
+  .sidebar .profile {
+    margin-top: 10%;
+    margin-bottom: 10%;
+  }
+
+  .sidebar .profile img {
+    display: block;
+    height: 100px;
+    margin: 0 auto;
+  }
+
+  .sidebar .profile p {
+    color: rgb(255, 255, 255);
+    font-size: 14px;
+  }
+
+  pre {
+    background-color: lightgray;
+    padding-left: 15px;
+    counter-reset: line;
+
+    padding: 10px 16px;
+    border-radius: 2px;
+    border-top: 4px solid #00aeef;
+    -moz-box-shadow: inset 0 0 10px #000;
+    box-shadow: inset 0 0 10px #000;
+  }
+
+  pre code {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+  }
+
+  pre code:before {
+    display: inline-block;
+    counter-increment: line;
+    content: counter(line);
+    border-right: 1px solid #ddd;
+    padding: 0 0.5em;
+    min-width: 35px;
+    text-align: right;
+    margin-right: 0.5em;
+    color: #888;
+  }
+</style>
+
 </html>
