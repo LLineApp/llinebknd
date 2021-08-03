@@ -127,3 +127,4 @@ class ProfileInput(graphene.InputObjectType):
     advisors = graphene.List(graphene.Int, required=False)
     accept_financial_advisor_contact = graphene.Boolean(required=False)
     page = graphene.Int(required=False)
+    level = graphene.Int(required=False)
