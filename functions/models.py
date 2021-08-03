@@ -58,6 +58,7 @@ class Profile(models.Model):
     accept_financial_advisor_contact = models.NullBooleanField(
         blank=True, null=True)
     page = models.IntegerField(blank=True, null=True)
+    level = models.IntegerField(blank=True, null=True)
 
 
 class ImmovableProperties(models.Model):
