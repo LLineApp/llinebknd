@@ -741,6 +741,6 @@ class Query(graphene.ObjectType):
                 if containing:
                     filter = filter & searchProfileFor(containing)
             pass
-            data = Profile.objects.all().filter(filter)
+            data = Profile.objects.all().filter(filter).exclude(cpf__exact=cpf)
             return {'data': data, 'advisor': advisor}
         pass
