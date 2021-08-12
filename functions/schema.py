@@ -105,7 +105,7 @@ class setProfileType(DjangoObjectType):
 
     def resolve_targets(self, info):
         return Targets.objects.filter(
-            profile__exact=str(self.id)).values().order_by('Date')
+            profile__exact=str(self.id)).values().order_by('date')
 
     is_advisor = graphene.Boolean()
 
