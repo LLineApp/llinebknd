@@ -2,6 +2,15 @@ import graphene
 from graphene_django import DjangoObjectType
 
 
+class TargetsInput(graphene.InputObjectType):
+    responsible_cpf = graphene.String(required=False)
+    date = graphene.Date(required=False)
+    present_value = graphene.Float(required=False)
+    monthly_investment = graphene.Float(required=False)
+    lower_variation = graphene.Float(required=False)
+    upper_variation = graphene.Float(required=False)
+    year_to_start_withdraw = graphene.Int(required=False)
+
 class ProfileAdvisorsInput(graphene.InputObjectType):
     profile = graphene.Int(required=True)
     advisors = graphene.Int(required=True)

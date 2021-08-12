@@ -101,6 +101,12 @@ class setProfileType(DjangoObjectType):
         return FixedIncomeSecurities.objects.filter(
             profile__exact=str(self.id)).values()
 
+    targets = graphene.List(TargetsOutput)
+
+    def resolve_targets(self, info):
+        return Targets.objects.filter(
+            profile__exact=str(self.id)).values()
+
     is_advisor = graphene.Boolean()
 
     def resolve_is_advisor(self, info):
@@ -177,6 +183,7 @@ class setProfile(graphene.Mutation):
                 register=financial_advisor['register'],
                 company=financial_advisor['company'],
             )
+        
             if created:
                 _financial_advisor.save()
             profile_data['financial_advisor'] = _financial_advisor
