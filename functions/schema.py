@@ -23,12 +23,11 @@ class AddTargetType(DjangoObjectType):
         model = Targets
 
 
-class AddTarget(graphene.Mutation):
+class addTarget(graphene.Mutation):
     target = graphene.Field(AddTargetType)
 
     class Arguments:
         token = graphene.String(required=True)
-        cpf = graphene.String(required=True)
         present_value = graphene.Float(required=True)
         monthly_investment = graphene.Float(required=True)
         lower_variation = graphene.Float(required=True)
@@ -37,12 +36,11 @@ class AddTarget(graphene.Mutation):
         responsible_cpf = graphene.String(required=False)
         date = graphene.Date(required=False)
 
-    def mutate(self, info, token, cpf, present_value, monthly_investment, lower_variation, upper_variation, year_to_start_withdraw, responsible_cpf, date):
-        date = datetime.now()
+    def mutate(self, info, token, present_value, monthly_investment, lower_variation, upper_variation, year_to_start_withdraw, responsible_cpf, date):
+        date = datetime.datetime.now()
         cpfFromAuth = str(getCPFFromAuth(token))
         if cpfFromAuth:
             target = Targets(   
-            cpf=cpf,
             present_value=present_value,
             monthly_investment=monthly_investment,
             lower_variation=lower_variation,
@@ -52,8 +50,9 @@ class AddTarget(graphene.Mutation):
             date=date    
             )
             target.save()
-            return Targets.objects.filter(
-            profile__exact=str(self.id)).order_by('date').values()
+            return addTarget(target=target)
+           
+
 
 class FinancialAdvisorsType(DjangoObjectType):
     class Meta:
@@ -524,7 +523,7 @@ class Mutation(graphene.ObjectType):
     add_advisor_to_profile = addAdvisorToProfile.Field(description="Vincula um assessor a um cliente")
     remove_advisor_from_profile = removeAdvisorFromProfile.Field(description="Remove assessor do cliente")
     change_main_advisor_of_profile = changeMainAdvisorOfProfile.Field(description="Altera o assessor principal do cliente")
-    add_target = AddTarget.Field(description="Adiciona nova meta para o cliente")
+    add_target = addTarget.Field(description="Adiciona nova meta para o cliente")
 
 items_per_page = 10
 
