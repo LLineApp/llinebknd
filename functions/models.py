@@ -59,7 +59,7 @@ class Profile(models.Model):
         blank=True, null=True)
     page = models.IntegerField(blank=True, null=True)
     level = models.IntegerField(blank=True, null=True)
-
+    
 
 class ImmovableProperties(models.Model):
     profile = models.ForeignKey(Profile, null=True, on_delete=models.SET_NULL)
@@ -148,3 +148,14 @@ class ProfileAdvisors(models.Model):
             models.UniqueConstraint(
                 fields=['profile', 'advisor'], name='profile_advisor_uk')
         ]
+
+class Targets(models.Model):
+    profile = models.ForeignKey(
+        Profile, null=False, on_delete=models.CASCADE)
+    responsible_cpf = models.TextField(blank=True, null=True)
+    date = models.DateField(blank=True, null=True)
+    present_value = models.FloatField(blank=True, null=True)
+    monthly_investment = models.FloatField(blank=True, null=True)
+    lower_variation = models.FloatField(blank=True, null=True)
+    upper_variation = models.FloatField(blank=True, null=True)
+    year_to_start_withdraw = models.IntegerField(blank=True, null=True)
