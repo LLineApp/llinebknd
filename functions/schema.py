@@ -16,7 +16,44 @@ from .outputs import *
 from .messages import *
 
 import math
+import datetime
 
+class AddTargetType(DjangoObjectType):
+    class Meta:
+        model = Targets
+
+
+class AddTarget(graphene.Mutation):
+    target = graphene.Field(AddTargetType)
+
+    class Arguments:
+        token = graphene.String(required=True)
+        cpf = graphene.String(required=True)
+        present_value = graphene.Float(required=True)
+        monthly_investment = graphene.Float(required=True)
+        lower_variation = graphene.Float(required=True)
+        upper_variation = graphene.Float(required=True)
+        year_to_start_withdraw = graphene.Int(required=True)
+        responsible_cpf = graphene.String(required=False)
+        date = graphene.Date(required=False)
+
+    def mutate(self, info, token, cpf, present_value, monthly_investment, lower_variation, upper_variation, year_to_start_withdraw, responsible_cpf, date):
+        date = datetime.now()
+        cpfFromAuth = str(getCPFFromAuth(token))
+        if cpfFromAuth:
+            target = Targets(   
+            cpf=cpf,
+            present_value=present_value,
+            monthly_investment=monthly_investment,
+            lower_variation=lower_variation,
+            upper_variation=upper_variation,
+            year_to_start_withdraw=year_to_start_withdraw,
+            responsible_cpf=cpfFromAuth,
+            date=date    
+            )
+            target.save()
+            return Targets.objects.filter(
+            profile__exact=str(self.id)).order_by('date').values()
 
 class FinancialAdvisorsType(DjangoObjectType):
     class Meta:
