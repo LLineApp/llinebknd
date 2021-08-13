@@ -34,7 +34,6 @@ class addTarget(graphene.Mutation):
         lower_variation = graphene.Float(required=True)
         upper_variation = graphene.Float(required=True)
         year_to_start_withdraw = graphene.Int(required=True)
-        responsible_cpf = graphene.String(required=True)
         
 
     def mutate(self, info, token, present_value,client_cpf ,monthly_investment, lower_variation, upper_variation, year_to_start_withdraw, responsible_cpf, date, profile):
