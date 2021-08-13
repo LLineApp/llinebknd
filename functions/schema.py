@@ -28,19 +28,23 @@ class addTarget(graphene.Mutation):
 
     class Arguments:
         token = graphene.String(required=True)
+        client_cpf = graphene.String(required=True)
         present_value = graphene.Float(required=True)
         monthly_investment = graphene.Float(required=True)
         lower_variation = graphene.Float(required=True)
         upper_variation = graphene.Float(required=True)
         year_to_start_withdraw = graphene.Int(required=True)
-        responsible_cpf = graphene.String(required=False)
-        date = graphene.Date(required=False)
+        responsible_cpf = graphene.String(required=True)
+        
 
-    def mutate(self, info, token, present_value, monthly_investment, lower_variation, upper_variation, year_to_start_withdraw, responsible_cpf, date):
+    def mutate(self, info, token, present_value,client_cpf ,monthly_investment, lower_variation, upper_variation, year_to_start_withdraw, responsible_cpf, date, profile):
         date = datetime.datetime.now()
+        profile = Profile.objects.get(cpf__exact=client_cpf)
         cpfFromAuth = str(getCPFFromAuth(token))
         if cpfFromAuth:
             target = Targets(   
+            profile=profile,
+            cpf=client_cpf,
             present_value=present_value,
             monthly_investment=monthly_investment,
             lower_variation=lower_variation,
@@ -50,7 +54,8 @@ class addTarget(graphene.Mutation):
             date=date    
             )
             target.save()
-            return addTarget(target=target)
+            return Targets.objects.filter(
+            profile__exact=str(self.id)).order_by('date').values()
            
 
 
