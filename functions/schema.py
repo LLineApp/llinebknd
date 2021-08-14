@@ -24,7 +24,7 @@ class AddTargetType(DjangoObjectType):
 
 
 class addTarget(graphene.Mutation):
-    target = graphene.List(AddTargetType)
+    targets = graphene.List(AddTargetType)
 
     class Arguments:
         token = graphene.String(required=True)
