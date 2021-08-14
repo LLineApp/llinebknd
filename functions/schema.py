@@ -24,7 +24,7 @@ class AddTargetType(DjangoObjectType):
 
 
 class addTarget(graphene.Mutation):
-    target = graphene.Field(AddTargetType)
+    target = graphene.List(AddTargetType)
 
     class Arguments:
         token = graphene.String(required=True)
@@ -36,14 +36,13 @@ class addTarget(graphene.Mutation):
         year_to_start_withdraw = graphene.Int(required=True)
         
 
-    def mutate(self, info, token, present_value,client_cpf ,monthly_investment, lower_variation, upper_variation, year_to_start_withdraw, responsible_cpf, date, profile):
+    def mutate(self, info, token, present_value,client_cpf ,monthly_investment, lower_variation, upper_variation, year_to_start_withdraw):
         date = datetime.datetime.now()
         profile = Profile.objects.get(cpf__exact=client_cpf)
         cpfFromAuth = str(getCPFFromAuth(token))
         if cpfFromAuth:
             target = Targets(   
             profile=profile,
-            cpf=client_cpf,
             present_value=present_value,
             monthly_investment=monthly_investment,
             lower_variation=lower_variation,
@@ -53,8 +52,8 @@ class addTarget(graphene.Mutation):
             date=date    
             )
             target.save()
-            return Targets.objects.filter(
-            profile__exact=str(self.id)).order_by('date').values()
+            return addTarget(targets=Targets.objects.filter(
+            profile__exact=profile).order_by('date'))
            
 
 
