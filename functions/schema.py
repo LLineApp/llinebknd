@@ -42,6 +42,7 @@ class addTarget(graphene.Mutation):
         cpfFromAuth = str(getCPFFromAuth(token))
         if cpfFromAuth:
             target = Targets(   
+            profile=profile,
             present_value=present_value,
             monthly_investment=monthly_investment,
             lower_variation=lower_variation,
