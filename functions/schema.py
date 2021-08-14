@@ -16,6 +16,45 @@ from .outputs import *
 from .messages import *
 
 import math
+import datetime
+
+class AddTargetType(DjangoObjectType):
+    class Meta:
+        model = Targets
+
+
+class addTarget(graphene.Mutation):
+    targets = graphene.List(AddTargetType)
+
+    class Arguments:
+        token = graphene.String(required=True)
+        client_cpf = graphene.String(required=True)
+        present_value = graphene.Float(required=True)
+        monthly_investment = graphene.Float(required=True)
+        lower_variation = graphene.Float(required=True)
+        upper_variation = graphene.Float(required=True)
+        year_to_start_withdraw = graphene.Int(required=True)
+        
+
+    def mutate(self, info, token, present_value,client_cpf ,monthly_investment, lower_variation, upper_variation, year_to_start_withdraw):
+        date = datetime.datetime.now()
+        profile = Profile.objects.get(cpf__exact=client_cpf)
+        cpfFromAuth = str(getCPFFromAuth(token))
+        if cpfFromAuth:
+            target = Targets(   
+            profile=profile,
+            present_value=present_value,
+            monthly_investment=monthly_investment,
+            lower_variation=lower_variation,
+            upper_variation=upper_variation,
+            year_to_start_withdraw=year_to_start_withdraw,
+            responsible_cpf=cpfFromAuth,
+            date=date    
+            )
+            target.save()
+            return addTarget(targets=Targets.objects.filter(
+            profile__exact=profile).order_by('date'))
+           
 
 
 class FinancialAdvisorsType(DjangoObjectType):
@@ -487,6 +526,7 @@ class Mutation(graphene.ObjectType):
     add_advisor_to_profile = addAdvisorToProfile.Field(description="Vincula um assessor a um cliente")
     remove_advisor_from_profile = removeAdvisorFromProfile.Field(description="Remove assessor do cliente")
     change_main_advisor_of_profile = changeMainAdvisorOfProfile.Field(description="Altera o assessor principal do cliente")
+    add_target = addTarget.Field(description="Adiciona nova meta para o cliente")
 
 items_per_page = 10
 
