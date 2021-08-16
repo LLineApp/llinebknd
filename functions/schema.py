@@ -53,7 +53,7 @@ class addTarget(graphene.Mutation):
             )
             target.save()
             return addTarget(targets=Targets.objects.filter(
-            profile__exact=profile).order_by('date'))
+            profile__exact=profile).order_by('-date'))
            
 
 
@@ -144,7 +144,7 @@ class setProfileType(DjangoObjectType):
 
     def resolve_targets(self, info):
         return Targets.objects.filter(
-            profile__exact=str(self.id)).order_by('date').values()
+            profile__exact=str(self.id)).order_by('-date').values()
 
     is_advisor = graphene.Boolean()
 
