@@ -41,6 +41,7 @@ class addTarget(graphene.Mutation):
         profile = Profile.objects.get(cpf__exact=client_cpf)
         cpfFromAuth = str(getCPFFromAuth(token))
         if cpfFromAuth:
+            Targets.objects.filter(profile__exact=profile, date__exact=date).delete()
             target = Targets(   
             profile=profile,
             present_value=present_value,
