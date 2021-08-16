@@ -19,9 +19,9 @@ import math
 import datetime
 
 
-class investmentType(DjangoObjectType):
+class setInvestmentType(DjangoObjectType):
     class Meta:
-        model = Investment
+        model = investmentType
 
 
 class AddTargetType(DjangoObjectType):
@@ -809,5 +809,5 @@ class Query(graphene.ObjectType):
         if token:
             cpfFromAuth = str(getCPFFromAuth(token))
             if cpfFromAuth:
-                data = Investment.objects.all()
+                data = investmentType.objects.all()
                 return data                            
