@@ -172,7 +172,7 @@ class setProfileType(DjangoObjectType):
         profile_advisors = ProfileAdvisors.objects.filter(
             profile=self).values_list('advisor')
         return FinancialAdvisors.objects.filter(id__in=profile_advisors,
-                                                profileadvisors__profile=self).values('id',
+                                                profileadvisors__profile=self, active__exact=True).values('id',
                                                                                       'fullname',
                                                                                       'register',
                                                                                       'company',
@@ -771,13 +771,15 @@ class Query(graphene.ObjectType):
     def resolve_get_advisors(self, info, token, page, containing=None, **kwargs):
         if token:
             cpfFromAuth = str(getCPFFromAuth(token))
+            if cpfFromAuth:
+                filter = (Q(active__exact=True))
 
             if not cpfFromAuth:
                 pass
 
             data = FinancialAdvisors.objects.all()
             if containing:
-                filter = searchAdvisorsFor(containing)
+                filter =filter & searchAdvisorsFor(containing)
                 data = data.filter(filter)
             return {'data': data, 'page': page}
 
