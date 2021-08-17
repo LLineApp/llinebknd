@@ -818,4 +818,4 @@ class Query(graphene.ObjectType):
             cpfFromAuth = str(getCPFFromAuth(token))
             if cpfFromAuth:
                 investmentTypeData = InvestmentType.objects.all()
-                return {'investmentType': investmentTypeData}                         
+                return {'investment_type': investmentTypeData}                         
