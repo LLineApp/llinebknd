@@ -26,10 +26,10 @@ class setInvestmentType(DjangoObjectType):
 
 class investmentType(graphene.ObjectType):
 
-    investment_type = graphene.List(setInvestmentType)
+    invetment_type = graphene.List(setInvestmentType)
 
     def resolve_insvestment_type(self, info):
-        return self['data']
+        return self['investment_type']
 
 
 class AddTargetType(DjangoObjectType):
@@ -817,5 +817,5 @@ class Query(graphene.ObjectType):
         if token:
             cpfFromAuth = str(getCPFFromAuth(token))
             if cpfFromAuth:
-                data = InvestmentType.objects.all()
-                return data                            
+                investmentTypeData = InvestmentType.objects.all()
+                return {'investmentType': investmentTypeData}                         
