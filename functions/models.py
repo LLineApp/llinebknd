@@ -7,6 +7,7 @@ class FinancialAdvisors(models.Model):
     register = models.TextField(blank=True, null=True)
     company = models.TextField(blank=True, null=True)
     cpf = models.TextField(blank=True, null=True)
+    active = models.NullBooleanField(blank=True, null=True)
 
 
 class Profile(models.Model):
