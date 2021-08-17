@@ -18,6 +18,20 @@ from .messages import *
 import math
 import datetime
 
+
+class setInvestmentType(DjangoObjectType):
+    class Meta:
+        model = InvestmentType
+
+
+class investmentType(graphene.ObjectType):
+
+    investment_type = graphene.List(setInvestmentType)
+
+    def resolve_investment_type(self, info):
+        return self['investment_type']
+
+
 class AddTargetType(DjangoObjectType):
     class Meta:
         model = Targets
@@ -792,3 +806,16 @@ class Query(graphene.ObjectType):
             data = Profile.objects.all().filter(filter).exclude(cpf__exact=cpf)
             return {'data': data, 'advisor': advisor}
         pass
+    
+
+    get_params = graphene.Field(investmentType,
+                                token=graphene.String(
+                                    description='Token de acesso')
+                                )
+
+    def resolve_get_params(self, info, token):
+        if token:
+            cpfFromAuth = str(getCPFFromAuth(token))
+            if cpfFromAuth:
+                investmentTypeData = InvestmentType.objects.all()
+                return {'investment_type': investmentTypeData}                         

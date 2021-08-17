@@ -159,3 +159,6 @@ class Targets(models.Model):
     lower_variation = models.FloatField(blank=True, null=True)
     upper_variation = models.FloatField(blank=True, null=True)
     year_to_start_withdraw = models.IntegerField(blank=True, null=True)
+
+class InvestmentType(models.Model):
+    name = models.TextField(blank=True, null=True)
