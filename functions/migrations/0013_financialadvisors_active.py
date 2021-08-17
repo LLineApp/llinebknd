@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='financialadvisors',
             name='active',
-            field=models.NullBooleanField(),
+            field=models.NullBooleanField(True),
         ),
     ]
