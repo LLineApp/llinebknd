@@ -28,7 +28,7 @@ class investmentType(graphene.ObjectType):
 
     invetment_type = graphene.List(setInvestmentType)
 
-    def resolve_insvestment_type(self, info):
+    def resolve_investment_type(self, info):
         return self['investment_type']
 
 
