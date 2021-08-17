@@ -21,7 +21,7 @@ import datetime
 
 class setInvestmentType(DjangoObjectType):
     class Meta:
-        model = investmentType
+        model = InvestmentType
 
 
 class AddTargetType(DjangoObjectType):
@@ -800,7 +800,7 @@ class Query(graphene.ObjectType):
         pass
     
 
-    get_params = graphene.Field(investmentType,
+    get_params = graphene.Field(setInvestmentType,
                                 token=graphene.String(
                                     description='Token de acesso')
                                 )
@@ -809,5 +809,5 @@ class Query(graphene.ObjectType):
         if token:
             cpfFromAuth = str(getCPFFromAuth(token))
             if cpfFromAuth:
-                data = investmentType.objects.all()
+                data = InvestmentType.objects.all()
                 return data                            
