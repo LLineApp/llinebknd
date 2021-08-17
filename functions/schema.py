@@ -26,7 +26,7 @@ class setInvestmentType(DjangoObjectType):
 
 class investmentType(graphene.ObjectType):
 
-    invetment_type = graphene.List(setInvestmentType)
+    investment_type = graphene.List(setInvestmentType)
 
     def resolve_investment_type(self, info):
         return self['investment_type']
