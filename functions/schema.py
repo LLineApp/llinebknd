@@ -24,6 +24,14 @@ class setInvestmentType(DjangoObjectType):
         model = InvestmentType
 
 
+class investmentType(graphene.ObjectType):
+
+    investment_type = graphene.List(setInvestmentType)
+
+    def resolve_insvestment_type(self, info):
+        return self['data']
+
+
 class AddTargetType(DjangoObjectType):
     class Meta:
         model = Targets
@@ -800,7 +808,7 @@ class Query(graphene.ObjectType):
         pass
     
 
-    get_params = graphene.Field(setInvestmentType,
+    get_params = graphene.Field(investmentType,
                                 token=graphene.String(
                                     description='Token de acesso')
                                 )
