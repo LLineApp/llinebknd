@@ -150,6 +150,10 @@ class ProfileAdvisors(models.Model):
                 fields=['profile', 'advisor'], name='profile_advisor_uk')
         ]
 
+class InvestmentType(models.Model):
+    name = models.TextField(blank=True, null=True)
+
+
 class Targets(models.Model):
     profile = models.ForeignKey(
         Profile, null=False, on_delete=models.CASCADE)
@@ -157,9 +161,6 @@ class Targets(models.Model):
     date = models.DateField(blank=True, null=True)
     present_value = models.FloatField(blank=True, null=True)
     monthly_investment = models.FloatField(blank=True, null=True)
-    lower_variation = models.FloatField(blank=True, null=True)
-    upper_variation = models.FloatField(blank=True, null=True)
     year_to_start_withdraw = models.IntegerField(blank=True, null=True)
-
-class InvestmentType(models.Model):
-    name = models.TextField(blank=True, null=True)
+    investmentType = models.ForeignKey(
+        InvestmentType, null=True, on_delete=models.CASCADE)
