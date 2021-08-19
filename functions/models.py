@@ -150,17 +150,19 @@ class ProfileAdvisors(models.Model):
                 fields=['profile', 'advisor'], name='profile_advisor_uk')
         ]
 
-class InvestmentType(models.Model):
+class Suitability(models.Model):
     name = models.TextField(blank=True, null=True)
+    interest = models.FloatField(blank=True, null=True)
 
 
 class Targets(models.Model):
     profile = models.ForeignKey(
         Profile, null=False, on_delete=models.CASCADE)
+    suitability = models.ForeignKey(
+        Suitability, null=True, on_delete=models.CASCADE)
     responsible_cpf = models.TextField(blank=True, null=True)
     date = models.DateField(blank=True, null=True)
     present_value = models.FloatField(blank=True, null=True)
     monthly_investment = models.FloatField(blank=True, null=True)
     year_to_start_withdraw = models.IntegerField(blank=True, null=True)
-    investment_type = models.ForeignKey(
-        InvestmentType, null=True, on_delete=models.CASCADE)
+    

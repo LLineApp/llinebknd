@@ -19,17 +19,17 @@ import math
 import datetime
 
 
-class setInvestmentType(DjangoObjectType):
+class setSuitability(DjangoObjectType):
     class Meta:
-        model = InvestmentType
+        model = Suitability
 
 
-class investmentType(graphene.ObjectType):
+class suitabilityType(graphene.ObjectType):
 
-    investment_type = graphene.List(setInvestmentType)
+    suitability = graphene.List(setSuitability)
 
     def resolve_investment_type(self, info):
-        return self['investment_type']
+        return self['suitability']
 
 
 class AddTargetType(DjangoObjectType):
@@ -46,10 +46,10 @@ class addTarget(graphene.Mutation):
         present_value = graphene.Float(required=True)
         monthly_investment = graphene.Float(required=True)
         year_to_start_withdraw = graphene.Int(required=True)
-        investment_type = graphene.Int(required=True)
+        suitability = graphene.Field(required=True)
         
 
-    def mutate(self, info, token, present_value,client_cpf ,monthly_investment, year_to_start_withdraw, investment_type):
+    def mutate(self, info, token, present_value,client_cpf ,monthly_investment, year_to_start_withdraw, suitability):
         date = datetime.datetime.now()
         profile = Profile.objects.get(cpf__exact=client_cpf)
         cpfFromAuth = str(getCPFFromAuth(token))
@@ -62,7 +62,7 @@ class addTarget(graphene.Mutation):
             year_to_start_withdraw=year_to_start_withdraw,
             responsible_cpf=cpfFromAuth,
             date=date,
-            investment_type=InvestmentType.objects.get(id=investment_type)    
+            suitability=Suitability.objects.get(id=suitability)    
             )
             target.save()
             return addTarget(targets=Targets.objects.filter(
@@ -808,7 +808,7 @@ class Query(graphene.ObjectType):
         pass
     
 
-    get_params = graphene.Field(investmentType,
+    get_params = graphene.Field(suitabilityType,
                                 token=graphene.String(
                                     description='Token de acesso')
                                 )
@@ -817,5 +817,5 @@ class Query(graphene.ObjectType):
         if token:
             cpfFromAuth = str(getCPFFromAuth(token))
             if cpfFromAuth:
-                investmentTypeData = InvestmentType.objects.all()
-                return {'investment_type': investmentTypeData}                         
+                suitability_data = Suitability.objects.all()
+                return {'suitability': suitability_data}                         
