@@ -46,7 +46,7 @@ class addTarget(graphene.Mutation):
         present_value = graphene.Float(required=True)
         monthly_investment = graphene.Float(required=True)
         year_to_start_withdraw = graphene.Int(required=True)
-        suitability = graphene.Field(required=True)
+        suitability = graphene.Int(required=True)
         
 
     def mutate(self, info, token, present_value,client_cpf ,monthly_investment, year_to_start_withdraw, suitability):
