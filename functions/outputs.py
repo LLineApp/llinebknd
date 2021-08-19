@@ -8,6 +8,7 @@ class TargetsOutput(graphene.ObjectType):
     present_value = graphene.Float(required=False)
     monthly_investment = graphene.Float(required=False)
     year_to_start_withdraw = graphene.Int(required=False)
+    investment_type = graphene.Int(required=False)
 
 class ProfileAdvisorsOutput(graphene.ObjectType):
     profile_id = graphene.Int(required=True)

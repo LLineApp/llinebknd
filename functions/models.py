@@ -162,5 +162,5 @@ class Targets(models.Model):
     present_value = models.FloatField(blank=True, null=True)
     monthly_investment = models.FloatField(blank=True, null=True)
     year_to_start_withdraw = models.IntegerField(blank=True, null=True)
-    investmentType = models.ForeignKey(
+    investment_type = models.ForeignKey(
         InvestmentType, null=True, on_delete=models.CASCADE)

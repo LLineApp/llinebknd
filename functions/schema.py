@@ -46,10 +46,10 @@ class addTarget(graphene.Mutation):
         present_value = graphene.Float(required=True)
         monthly_investment = graphene.Float(required=True)
         year_to_start_withdraw = graphene.Int(required=True)
-        investmentType = graphene.String(required=True)
+        investment_type = graphene.Int(required=True)
         
 
-    def mutate(self, info, token, present_value,client_cpf ,monthly_investment, year_to_start_withdraw, investmentType):
+    def mutate(self, info, token, present_value,client_cpf ,monthly_investment, year_to_start_withdraw, investment_type):
         date = datetime.datetime.now()
         profile = Profile.objects.get(cpf__exact=client_cpf)
         cpfFromAuth = str(getCPFFromAuth(token))
@@ -62,7 +62,7 @@ class addTarget(graphene.Mutation):
             year_to_start_withdraw=year_to_start_withdraw,
             responsible_cpf=cpfFromAuth,
             date=date,
-            investmentType=investmentType    
+            investment_type=InvestmentType.objects.get(id=investment_type)    
             )
             target.save()
             return addTarget(targets=Targets.objects.filter(
