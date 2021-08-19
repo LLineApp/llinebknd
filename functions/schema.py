@@ -28,7 +28,7 @@ class suitabilityType(graphene.ObjectType):
 
     suitability = graphene.List(setSuitability)
 
-    def resolve_investment_type(self, info):
+    def resolve_suitability(self, info):
         return self['suitability']
 
 
