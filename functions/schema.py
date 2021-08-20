@@ -99,6 +99,12 @@ class setAdvisorsProfile(graphene.Mutation):
             return setAdvisorsProfile(advisorsProfile=advisorsProfile)
 
 
+class getTargetType(DjangoObjectType):
+    class Meta:
+        model = Targets
+        fields = "all"
+
+
 class setProfileType(DjangoObjectType):
     class Meta:
         model = Profile
@@ -153,11 +159,11 @@ class setProfileType(DjangoObjectType):
         return FixedIncomeSecurities.objects.filter(
             profile__exact=str(self.id)).values()
 
-    targets = graphene.List(TargetsOutput)
+    targets = graphene.List(getTargetType)
 
     def resolve_targets(self, info):
         return Targets.objects.filter(
-            profile__exact=str(self.id)).order_by('-date').values()
+            profile__exact=str(self.id)).order_by('-date')
 
     is_advisor = graphene.Boolean()
 
