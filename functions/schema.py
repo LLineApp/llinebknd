@@ -19,17 +19,17 @@ import math
 import datetime
 
 
-class setInvestmentType(DjangoObjectType):
+class setSuitability(DjangoObjectType):
     class Meta:
-        model = InvestmentType
+        model = Suitability
 
 
-class investmentType(graphene.ObjectType):
+class suitabilityType(graphene.ObjectType):
 
-    investment_type = graphene.List(setInvestmentType)
+    suitability = graphene.List(setSuitability)
 
-    def resolve_investment_type(self, info):
-        return self['investment_type']
+    def resolve_suitability(self, info):
+        return self['suitability']
 
 
 class AddTargetType(DjangoObjectType):
@@ -45,12 +45,11 @@ class addTarget(graphene.Mutation):
         client_cpf = graphene.String(required=True)
         present_value = graphene.Float(required=True)
         monthly_investment = graphene.Float(required=True)
-        lower_variation = graphene.Float(required=True)
-        upper_variation = graphene.Float(required=True)
         year_to_start_withdraw = graphene.Int(required=True)
+        suitability = graphene.Int(required=True)
         
 
-    def mutate(self, info, token, present_value,client_cpf ,monthly_investment, lower_variation, upper_variation, year_to_start_withdraw):
+    def mutate(self, info, token, present_value,client_cpf ,monthly_investment, year_to_start_withdraw, suitability):
         date = datetime.datetime.now()
         profile = Profile.objects.get(cpf__exact=client_cpf)
         cpfFromAuth = str(getCPFFromAuth(token))
@@ -60,11 +59,10 @@ class addTarget(graphene.Mutation):
             profile=profile,
             present_value=present_value,
             monthly_investment=monthly_investment,
-            lower_variation=lower_variation,
-            upper_variation=upper_variation,
             year_to_start_withdraw=year_to_start_withdraw,
             responsible_cpf=cpfFromAuth,
-            date=date    
+            date=date,
+            suitability=Suitability.objects.get(id=suitability)    
             )
             target.save()
             return addTarget(targets=Targets.objects.filter(
@@ -99,6 +97,12 @@ class setAdvisorsProfile(graphene.Mutation):
             )
             advisorsProfile.save()
             return setAdvisorsProfile(advisorsProfile=advisorsProfile)
+
+
+class getTargetType(DjangoObjectType):
+    class Meta:
+        model = Targets
+        fields = "__all__"
 
 
 class setProfileType(DjangoObjectType):
@@ -155,11 +159,11 @@ class setProfileType(DjangoObjectType):
         return FixedIncomeSecurities.objects.filter(
             profile__exact=str(self.id)).values()
 
-    targets = graphene.List(TargetsOutput)
+    targets = graphene.List(getTargetType)
 
     def resolve_targets(self, info):
         return Targets.objects.filter(
-            profile__exact=str(self.id)).order_by('-date').values()
+            profile__exact=str(self.id)).order_by('-date')
 
     is_advisor = graphene.Boolean()
 
@@ -810,7 +814,7 @@ class Query(graphene.ObjectType):
         pass
     
 
-    get_params = graphene.Field(investmentType,
+    get_params = graphene.Field(suitabilityType,
                                 token=graphene.String(
                                     description='Token de acesso')
                                 )
@@ -819,5 +823,5 @@ class Query(graphene.ObjectType):
         if token:
             cpfFromAuth = str(getCPFFromAuth(token))
             if cpfFromAuth:
-                investmentTypeData = InvestmentType.objects.all()
-                return {'investment_type': investmentTypeData}                         
+                suitability_data = Suitability.objects.all()
+                return {'suitability': suitability_data}                         
