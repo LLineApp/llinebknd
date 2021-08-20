@@ -102,7 +102,7 @@ class setAdvisorsProfile(graphene.Mutation):
 class getTargetType(DjangoObjectType):
     class Meta:
         model = Targets
-        fields = "all"
+        fields = "__all__"
 
 
 class setProfileType(DjangoObjectType):
