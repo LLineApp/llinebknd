@@ -17,7 +17,7 @@ from .messages import *
 
 import math
 import datetime
-
+from llinebknd.functions.math import compoundInterest
 
 class setSuitability(DjangoObjectType):
     class Meta:
@@ -38,7 +38,7 @@ class AddTargetType(DjangoObjectType):
 
 
 class getLifeLineType(graphene.ObjectType):
-    lifeline = graphene.List(
+    lifeline = graphene.Field(
         AddTargetType, description='Lista com os dado da linha da vida')
 
 
@@ -842,5 +842,12 @@ class Query(graphene.ObjectType):
         if token:
             cpfFromAtuh = str(cpfFromAtuh(token))
             if cpfFromAtuh:
-               if not cpf:
-                   cpf = cpfFromAtuh
+                profile = Profile.objects.filter(cpf__exact=cpfFromAtuh)
+                first_target = Targets.objects.filter(profile__exact=profile).order_by('date').first()
+                last_target = Targets.objects.filter(profile__exact=profile).order_by('-date').first()
+                invested_time = last_target.year_to_start_withdraw - first_target.date.year
+                final_value = compoundInterest(first_target.present_value, first_target.suitability.interest, invested_time, first_target.monthly_investment)
+                periods = [first_target.date.year, last_target.year_to_start_withdraw]
+                amount = [first_target.present_value, final_value]
+                life_line = {'periods' : periods, 'amount' : amount}
+                return {'life_line' : life_line}
