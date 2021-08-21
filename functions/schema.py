@@ -32,16 +32,24 @@ class suitabilityType(graphene.ObjectType):
         return self['suitability']
 
 
+class lifeLineType(ObjectType):
+    periods = graphene.List(graphene.Int)
+    amount = graphene.List(graphene.Float)
+
+    def resolve_periods(self, info):
+        return self ["periods"]
+
+    def resolve_amount(self, info):
+        return self ["amount"]
+    
+
+class getLifeLine(graphene.ObjectType):
+    life_line = graphene.Field(lifeLineType, description='Lista com os dado da linha da vida')
+
+
 class AddTargetType(DjangoObjectType):
     class Meta:
         model = Targets
-
-
-class getLifeLineType(graphene.ObjectType):
-    lifeline = graphene.Field(
-        AddTargetType, description='Lista com os dado da linha da vida')
-
-
 
 class addTarget(graphene.Mutation):
     targets = graphene.List(AddTargetType)
@@ -833,16 +841,16 @@ class Query(graphene.ObjectType):
                 return {'suitability': suitability_data}
 
 
-    get_life_line = graphene.Field(getLifeLineType,
+    get_life_line = graphene.Field(getLifeLine,
                                      token = graphene.String(description= "Token de autenticação do usuário"),
                                      cpf = graphene.String(description= "Cpf do cliente")   
                                     )                                   
     
-    def resolve_get_lifeline(self, info, token, cpf):
+    def resolve_get_life_line(self, info, token, cpf):
         if token:
-            cpfFromAtuh = str(cpfFromAtuh(token))
-            if cpfFromAtuh:
-                profile = Profile.objects.filter(cpf__exact=cpfFromAtuh)
+            cpf_from_auth = str(getCPFFromAuth(token))
+            if cpf_from_auth:
+                profile = Profile.objects.get(cpf__exact=cpf_from_auth)
                 first_target = Targets.objects.filter(profile__exact=profile).order_by('date').first()
                 last_target = Targets.objects.filter(profile__exact=profile).order_by('-date').first()
                 invested_time = last_target.year_to_start_withdraw - first_target.date.year
