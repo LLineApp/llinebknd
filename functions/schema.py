@@ -37,6 +37,12 @@ class AddTargetType(DjangoObjectType):
         model = Targets
 
 
+class getLifeLineType(graphene.ObjectType):
+    lifeline = graphene.List(
+        AddTargetType, description='Lista com os dado da linha da vida')
+
+
+
 class addTarget(graphene.Mutation):
     targets = graphene.List(AddTargetType)
 
@@ -824,4 +830,17 @@ class Query(graphene.ObjectType):
             cpfFromAuth = str(getCPFFromAuth(token))
             if cpfFromAuth:
                 suitability_data = Suitability.objects.all()
-                return {'suitability': suitability_data}                         
+                return {'suitability': suitability_data}
+
+
+    get_life_line = graphene.Field(getLifeLineType,
+                                     token = graphene.String(description= "Token de autenticação do usuário"),
+                                     cpf = graphene.String(description= "Cpf do cliente")   
+                                    )                                   
+    
+    def resolve_get_lifeline(self, info, token, cpf):
+        if token:
+            cpfFromAtuh = str(cpfFromAtuh(token))
+            if cpfFromAtuh:
+               if not cpf:
+                   cpf = cpfFromAtuh
