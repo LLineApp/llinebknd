@@ -32,7 +32,7 @@ class suitabilityType(graphene.ObjectType):
         return self['suitability']
 
 
-class lifeLineType(ObjectType):
+class masterLineType(ObjectType):
     periods = graphene.List(graphene.Int)
     amount = graphene.List(graphene.Float)
 
@@ -44,7 +44,7 @@ class lifeLineType(ObjectType):
     
 
 class getLifeLine(graphene.ObjectType):
-    life_line = graphene.Field(lifeLineType, description='Lista com os dado da linha da vida')
+    master_line = graphene.Field(masterLineType, description='Linha mestra da linha da vida')
 
 
 class AddTargetType(DjangoObjectType):
@@ -70,17 +70,17 @@ class addTarget(graphene.Mutation):
         if cpfFromAuth:
             Targets.objects.filter(profile__exact=profile, date__exact=date).delete()
             target = Targets(   
-            profile=profile,
-            present_value=present_value,
-            monthly_investment=monthly_investment,
-            year_to_start_withdraw=year_to_start_withdraw,
-            responsible_cpf=cpfFromAuth,
-            date=date,
-            suitability=Suitability.objects.get(id=suitability)    
+                profile=profile,
+                present_value=present_value,
+                monthly_investment=monthly_investment,
+                year_to_start_withdraw=year_to_start_withdraw,
+                responsible_cpf=cpfFromAuth,
+                date=date,
+                suitability=Suitability.objects.get(id=suitability)    
             )
             target.save()
             return addTarget(targets=Targets.objects.filter(
-            profile__exact=profile).order_by('-date'))
+                profile__exact=profile).order_by('-date'))
            
 
 
@@ -196,7 +196,20 @@ class setProfileType(DjangoObjectType):
                                                                                       'company',
                                                                                       'cpf',
                                                                                       'profileadvisors__main_advisor')
+    life_line = graphene.Field(getLifeLine)                                   
+    
+    def resolve_life_line(self, info):
+                first_target = Targets.objects.filter(profile__exact=self).order_by('date').first()
+                last_target = Targets.objects.filter(profile__exact=self).order_by('-date').first()
 
+                invested_time = last_target.year_to_start_withdraw - first_target.date.year
+                final_value = compoundInterest(first_target.present_value, first_target.suitability.interest, invested_time, first_target.monthly_investment)
+
+                periods = [first_target.date.year, last_target.year_to_start_withdraw]
+                amount = [first_target.present_value, final_value]
+
+                master_line = {'periods' : periods, 'amount' : amount}
+                return {'master_line' : master_line}
 
 class setProfile(graphene.Mutation):
     profile = graphene.Field(setProfileType)
@@ -839,23 +852,3 @@ class Query(graphene.ObjectType):
             if cpfFromAuth:
                 suitability_data = Suitability.objects.all()
                 return {'suitability': suitability_data}
-
-
-    get_life_line = graphene.Field(getLifeLine,
-                                     token = graphene.String(description= "Token de autenticação do usuário"),
-                                     cpf = graphene.String(description= "Cpf do cliente")   
-                                    )                                   
-    
-    def resolve_get_life_line(self, info, token, cpf):
-        if token:
-            cpf_from_auth = str(getCPFFromAuth(token))
-            if cpf_from_auth:
-                profile = Profile.objects.get(cpf__exact=cpf_from_auth)
-                first_target = Targets.objects.filter(profile__exact=profile).order_by('date').first()
-                last_target = Targets.objects.filter(profile__exact=profile).order_by('-date').first()
-                invested_time = last_target.year_to_start_withdraw - first_target.date.year
-                final_value = compoundInterest(first_target.present_value, first_target.suitability.interest, invested_time, first_target.monthly_investment)
-                periods = [first_target.date.year, last_target.year_to_start_withdraw]
-                amount = [first_target.present_value, final_value]
-                life_line = {'periods' : periods, 'amount' : amount}
-                return {'life_line' : life_line}
