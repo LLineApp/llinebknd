@@ -5,4 +5,4 @@ def compoundInterest(principalValue, interestRate, time, monthlyDeposit):
     finalValue = principalValue * factor
     finalDeposit = monthlyDeposit * ((factor - 1) / numericRate)
 
-    return finalValue + finalDeposit
+    return round(finalValue + finalDeposit, 2)
