@@ -199,6 +199,10 @@ class setProfileType(DjangoObjectType):
     life_line = graphene.Field(getLifeLine)                                   
     
     def resolve_life_line(self, info):
+                count_targets = Targets.objects.filter(profile__exact=self).order_by('date').count()
+                if (count_targets == 0):
+                    return {'master_line' : {'periods' : [0, 0], 'amount' : [0, 0]}}
+
                 first_target = Targets.objects.filter(profile__exact=self).order_by('date').first()
                 last_target = Targets.objects.filter(profile__exact=self).order_by('-date').first()
 
@@ -206,7 +210,7 @@ class setProfileType(DjangoObjectType):
                 final_value = compoundInterest(first_target.present_value, first_target.suitability.interest, invested_time, first_target.monthly_investment)
 
                 periods = [first_target.date.year, last_target.year_to_start_withdraw]
-                amount = [first_target.present_value, final_value]
+                amount = [first_target.present_value, round(final_value, 2)]
 
                 master_line = {'periods' : periods, 'amount' : amount}
                 return {'master_line' : master_line}
