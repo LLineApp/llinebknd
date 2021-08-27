@@ -17,7 +17,9 @@ from .messages import *
 
 import math
 import datetime
-from llinebknd.functions.math import compoundInterest
+
+from llinebknd.functions.life_line import get_master_line
+
 
 class setSuitability(DjangoObjectType):
     class Meta:
@@ -199,21 +201,12 @@ class setProfileType(DjangoObjectType):
     life_line = graphene.Field(getLifeLine)                                   
     
     def resolve_life_line(self, info):
-                count_targets = Targets.objects.filter(profile__exact=self).order_by('date').count()
-                if (count_targets == 0):
-                    return {'master_line' : {'periods' : [], 'amount' : []}}
+        targets = Targets.objects.filter(profile__exact=self).order_by('date')
+        periods, amount = get_master_line(targets)
+        master_line = {'periods': periods, 'amount': amount}
 
-                first_target = Targets.objects.filter(profile__exact=self).order_by('date').first()
-                last_target = Targets.objects.filter(profile__exact=self).order_by('-date').first()
+        return {'master_line': master_line}
 
-                invested_time = last_target.year_to_start_withdraw - first_target.date.year
-                final_value = compoundInterest(first_target.present_value, first_target.suitability.interest, invested_time, first_target.monthly_investment)
-
-                periods = [first_target.date.year, last_target.year_to_start_withdraw]
-                amount = [first_target.present_value, round(final_value, 2)]
-
-                master_line = {'periods' : periods, 'amount' : amount}
-                return {'master_line' : master_line}
 
 class setProfile(graphene.Mutation):
     profile = graphene.Field(setProfileType)
