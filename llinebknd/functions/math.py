@@ -6,3 +6,6 @@ def compoundInterest(principalValue, interestRate, time, monthlyDeposit):
     finalDeposit = monthlyDeposit * ((factor - 1) / numericRate)
 
     return finalValue + finalDeposit
+
+def convertYearInterestToMonthInterest(yearInterestRate):
+    return ((1 + yearInterestRate)**(1/12)) - 1
