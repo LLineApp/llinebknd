@@ -17,14 +17,16 @@ def get_master_line(targets):
             try:
                 next_date = targets[index].date
             except:    
-                next_date = datetime.datetime(target.year_to_start_withdraw, 1, 1)
+                next_date = datetime.datetime(target.year_to_start_withdraw-1, 12, 31)
             index += 1
 
             invested_time = monthsBetween(target.date, next_date)
 
+            numeric_interest = target.suitability.interest/100
+
             end_value = compoundInterest(
                 present_value, 
-                convertYearInterestToMonthInterest(target.suitability.interest),
+                convertYearInterestToMonthInterest(numeric_interest),
                 invested_time, 
                 target.monthly_investment)
 
