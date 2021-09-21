@@ -7,27 +7,24 @@ from functions.models import Profile
 class TestModels(TestCase):
     def setUp(self):
         self.profile1 = Profile.objects.create(
-            cpf='19176206831',
-            email='renato@lline.com.br',
-            fullname='Renato da Silva',
+            cpf='98765432101',
+            email='yoda@jedi.org',
+            fullname='Mestre Yoda',
             birthdate='1975-06-19',
-            preferred_contact='(48) 988379329',
-            maritalStatus='casado',
+            preferred_contact='(48) 999999999',
+            maritalStatus='solteiro',
             maritalHowManyYears=25,
-            spouseName='Kátia da Silva',
-            spouseOccupation='Confeiteira',
             parentsAreThemSupportedByYou=False,
             parentsHowMuchYouSuportThem=0.00,
             parentsIsThereAPossibilityOfInheritance=False,
             parentsOfWhom='',
             parentsWhatIsTheEstimatedValue=0.00,
-            occupation='Programador',
-            role='Programador',
-            company_name='LLine',
-            business_email='renato@lline.com.br',
-            business_kind='Desenvolvimento de software',
-            business_field='Tecnologia',
-            business_phones='(48) 98837-9329',
+            occupation='Jedi',
+            role='Mestre',
+            company_name='Republica Galática',
+            business_email='yoda@republica.gov',
+            business_kind='Treinamento de padawans',
+            business_field='Arte Jedi',
             company_has_private_insurance=False,
             social_security_value=0.00,
             private_security_your_value=0.00,
@@ -39,9 +36,9 @@ class TestModels(TestCase):
             how_much_you_save=0.00,
             debt_loans=0.00,
             partner_in_company=0.00,
-            health='Nem me fala',
-            plans_and_projects='Pobre não tem planos nem projetos',
-            have_financial_concerns='Todos',
+            health='Saude muito eu ter',
+            plans_and_projects='Com você esteja a força',
+            have_financial_concerns='Nenhum',
             additional_info='Isso é só um teste',
             portfolio_income=0.00,
             page=19
@@ -49,7 +46,7 @@ class TestModels(TestCase):
 
     def test_profile(self):
         expected_count = 1
-        expected_fullname = 'Renato da Silva'
+        expected_fullname = 'Mestre Yoda'
         found = Profile.objects.all()
         self.assertEquals(found.count(), expected_count)
-        self.assertEqual(found.first().fullname, expected_fullname)
+        self.assertEquals(found.first().fullname, expected_fullname)
