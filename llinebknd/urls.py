@@ -26,11 +26,11 @@ from users.functions.custom_password_reset import CustomPasswordResetForm
 from functions import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('graphql/', csrf_exempt(GraphQLView.as_view(graphiql=True))),
-    path('password_reset/', auth_views.PasswordResetView.as_view(title="Teste", template_name="users/password_reset.html", form_class=CustomPasswordResetForm)),
+    path('admin/', admin.site.urls, name='admin'),
+    path('graphql/', csrf_exempt(GraphQLView.as_view(graphiql=True)), name='graphql'),
+    path('password_reset/', auth_views.PasswordResetView.as_view(title="Teste", template_name="users/password_reset.html", form_class=CustomPasswordResetForm), name='password_reset'),
     path('password_reset_confirm/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='users/password_reset_confirm.html'), name='password_reset_confirm'),
     path('password_reset_done/', auth_views.PasswordResetDoneView.as_view(template_name='users/password_reset_done.html'), name='password_reset_done'),
     path('password_reset_complete/', auth_views.PasswordResetCompleteView.as_view(template_name='users/password_reset_complete.html'), name='password_reset_complete'),
-    path('help/getClientsPortfolioFromAdvisor/', views.get_clients_portfolio_from_advisor_help)
+    path('help/getClientsPortfolioFromAdvisor/', views.get_clients_portfolio_from_advisor_help, name='getClientsPortfolioFromAdvisor')
 ]
