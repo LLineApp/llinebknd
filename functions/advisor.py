@@ -22,4 +22,7 @@ class advisorsLink:
         pass
 
     def getAdvisorByLink(self):
-        return AdvisorsLink.objects.get(link__exact=self)
+        try:
+            return AdvisorsLink.objects.get(link__exact=self)  
+        except:
+            raise Exception("A chave do link de acesso não existe ou está expirada")  
