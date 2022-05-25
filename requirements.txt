@@ -9,4 +9,4 @@ django-cors-headers==3.7.0
 django-filter==2.4.0
 django-heroku
 requests
-PyJWT==1.7.1
+PyJWT==2.4.0
